@@ -22,11 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 專案子應用
     'accounts',
-    'inventory',
     'goals',
     'journal',
     'ai_engine',
-    'reports',
 ]
 
 MIDDLEWARE = [

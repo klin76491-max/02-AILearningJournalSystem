@@ -1,30 +1,23 @@
 from django.test import TestCase
-from .services import AISummaryService
+from .services import SoulReflectionEngine
+from .default_questions import DEFAULT_SOUL_QUESTIONS
+
 
 class AIEngineTests(TestCase):
-    def test_fallback_rule_parse(self):
-        raw_text = """
-        • 研讀 Django ORM 查詢優化
-        - 筆記：select_related 用於 Foreign key
-        ! 踩坑：忘記加 db_index 導致查詢很慢
-        ★ 反思：基礎扎實比寫得快更重要
-        ○ 晚上 8:00 線上讀書會
-        """
-        items = AISummaryService.parse_raw_text_to_bullets(raw_text)
-        self.assertEqual(len(items), 5)
+    def test_default_questions_pool_count(self):
+        # 驗證內建預設題庫不少於 100 句
+        self.assertGreaterEqual(len(DEFAULT_SOUL_QUESTIONS), 100)
 
-        types = [item['type'] for item in items]
-        self.assertIn('task', types)
-        self.assertIn('note', types)
-        self.assertIn('obstacle', types)
-        self.assertIn('reflection', types)
-        self.assertIn('event', types)
-
-    def test_fallback_daily_reflection(self):
-        bullets = [
-            {'type': 'task', 'content': '完成 SA 文件', 'is_completed': True},
-            {'type': 'note', 'content': '學習新架構', 'is_completed': False}
-        ]
-        res = AISummaryService.generate_daily_reflection('2026-08-15', bullets, mood_score=4)
-        self.assertIn('summary', res)
-        self.assertIn('reflection', res)
+    def test_fallback_reflection_generation(self):
+        # 測試無 API key 或降級時，能正確產出 summary, blindspot, soul_question
+        result = SoulReflectionEngine.generate_reflection(
+            did_today="寫了資料庫遷移測試代碼",
+            learned_today="學會了 Django atomic 事務",
+            failed_today="最初忘了更新 admin",
+            resistance_today="有點困想睡覺"
+        )
+        self.assertIn('summary', result)
+        self.assertIn('blindspot', result)
+        self.assertIn('soul_question', result)
+        self.assertIn('source', result)
+        self.assertIn(result['soul_question'], DEFAULT_SOUL_QUESTIONS)

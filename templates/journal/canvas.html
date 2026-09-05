@@ -1,0 +1,605 @@
+{% extends 'base.html' %}
+
+{% block title %}留下痕跡｜{{ today|date:"Y年m月d日" }}{% endblock %}
+
+{% block content %}
+<!-- 手帳頂部頁眉 -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 pb-2 border-bottom border-secondary-subtle gap-2">
+    <div class="d-flex align-items-center flex-wrap gap-2">
+        <span class="badge-goal shadow-sm" data-tippy-content="當前專注方向，點擊鉛筆可更換">
+            🔖 方向：<strong>{{ active_goal.title }}</strong>
+            <a href="javascript:void(0)" onclick="openGoalModal()" class="text-decoration-none ms-2 text-secondary" title="更換前進方向">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+        </span>
+        <span class="text-secondary small font-serif">
+            {{ today|date:"Y 年 n 月 j 日  l" }}
+        </span>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+        <!-- 專注模式切換 -->
+        <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3 shadow-sm" id="zenToggleBtn" onclick="toggleZenMode()" data-tippy-content="開啟/退出純淨手帳專注模式 (Esc)">
+            <i class="bi bi-aspect-ratio me-1"></i> <span id="zenText">專注模式</span>
+        </button>
+
+        <!-- 切換模式 -->
+        <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3 shadow-sm" id="toggleModeBtn" onclick="toggleWritingMode()" data-tippy-content="切換為無拘無束的自由手帳模式">
+            <i class="bi bi-arrow-left-right me-1"></i> <span id="modeText">切換為自由速寫</span>
+        </button>
+    </div>
+</div>
+
+<div class="row g-4" id="canvasRow">
+    <!-- 左頁：今日手帳紙張書寫區 -->
+    <div class="col-12 col-lg-8" id="leftPageCol">
+        <div class="handbook-card page-curl p-4 p-md-5 position-relative">
+            <!-- 書籤絲帶 -->
+            <div class="bookmark-ribbon"></div>
+            <!-- 和紙膠帶裝飾 -->
+            <div class="washi-tape washi-yellow"></div>
+            
+            <!-- 戳印印章（儲存後蓋印） -->
+            <div id="stampSeal" class="position-absolute end-0 top-0 mt-3 me-3 stamp-seal {% if entry %}stamp-sealed-anim{% else %}d-none{% endif %}">
+                <i class="bi bi-check2-circle me-1"></i> TRACE SEALED • 痕跡已留存
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-1">
+                <div>
+                    <h2 class="fs-5 fw-bold text-dark mb-1">
+                        <i class="bi bi-feather me-1 text-primary"></i> 今天的痕跡
+                    </h2>
+                    <div class="ink-pen-indicator mt-1">
+                        <span class="ink-dot" id="inkDot"></span>
+                        <span id="autoSaveStatus">{% if entry %}墨跡已沉澱歸檔{% else %}墨水已備好，隨寫即存{% endif %}</span>
+                    </div>
+                </div>
+
+                <!-- 快速心情與天氣印章選擇館 -->
+                <div class="d-none d-sm-flex flex-wrap gap-1 align-items-center stamp-picker-group">
+                    <button type="button" class="stamp-btn {% if entry.weather == 'sunny' or not entry %}active{% endif %}" onclick="selectWeather(this, 'sunny')" data-tippy-content="今日天候：晴朗日光">☀️ 晴</button>
+                    <button type="button" class="stamp-btn {% if entry.weather == 'rainy' %}active{% endif %}" onclick="selectWeather(this, 'rainy')" data-tippy-content="今日天候：濛濛細雨">🌧️ 雨</button>
+                    <button type="button" class="stamp-btn {% if entry.weather == 'night' %}active{% endif %}" onclick="selectWeather(this, 'night')" data-tippy-content="今日天候：寂靜深夜">🌙 夜</button>
+                    <span class="text-muted small mx-1">|</span>
+                    <button type="button" class="stamp-btn {% if entry.mood == 'sparks' %}active{% endif %}" onclick="selectMood(this, 'sparks')" data-tippy-content="心情：捕捉到靈光或小成就">✨ 微光</button>
+                    <button type="button" class="stamp-btn {% if entry.mood == 'chaos' or not entry %}active{% endif %}" onclick="selectMood(this, 'chaos')" data-tippy-content="心情：思緒繁雜混亂">🌀 混亂</button>
+                    <button type="button" class="stamp-btn {% if entry.mood == 'sprout' %}active{% endif %}" onclick="selectMood(this, 'sprout')" data-tippy-content="心情：有微小萌芽與新起點">🌱 萌芽</button>
+                </div>
+            </div>
+
+            <form id="traceForm" onsubmit="return handleFormSubmit(event)">
+                {% csrf_token %}
+
+                <!-- 故事四問模式 -->
+                <div id="fourQuestionsSection" class="mt-3">
+                    <!-- 第 1 問 -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold text-dark mb-0">
+                                1. 今天做了什麼？ <span class="fw-normal text-muted">(行動的痕跡，哪怕再微小)</span>
+                            </label>
+                            <button type="button" class="btn-spark-dice" onclick="rollSparkTip(1)" data-tippy-content="擲骰子換個靈感提示">
+                                🎲 <span class="small font-serif">換個提示</span>
+                            </button>
+                        </div>
+                        <div id="sparkTip1" class="spark-note mb-2 py-1 px-2 d-none"></div>
+                        <textarea class="form-control dot-grid-input" id="did_today" rows="3" 
+                                  placeholder="• 寫了幾行代碼、讀了一篇文章、嘗試了解決一個 bug...">{{ entry.did_today|default:'' }}</textarea>
+                    </div>
+
+                    <!-- 第 2 問 -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold text-dark mb-0">
+                                2. 今天學到了什麼？ <span class="fw-normal text-muted">(認知、技巧或微小頓悟)</span>
+                            </label>
+                            <button type="button" class="btn-spark-dice" onclick="rollSparkTip(2)" data-tippy-content="擲骰子換個靈感提示">
+                                🎲 <span class="small font-serif">換個提示</span>
+                            </button>
+                        </div>
+                        <div id="sparkTip2" class="spark-note mb-2 py-1 px-2 d-none"></div>
+                        <textarea class="form-control dot-grid-input" id="learned_today" rows="2" 
+                                  placeholder="• 發現了某個新方法、或是明白為什麼過去會卡住...">{{ entry.learned_today|default:'' }}</textarea>
+                    </div>
+
+                    <!-- 第 3 問 -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold text-dark mb-0">
+                                3. 哪裡失敗了？ <span class="fw-normal text-danger">(誠實面對挫折、失控與阻礙)</span>
+                            </label>
+                            <button type="button" class="btn-spark-dice" onclick="rollSparkTip(3)" data-tippy-content="擲骰子換個靈感提示">
+                                🎲 <span class="small font-serif">換個提示</span>
+                            </button>
+                        </div>
+                        <div id="sparkTip3" class="spark-note mb-2 py-1 px-2 d-none"></div>
+                        <textarea class="form-control dot-grid-input border-danger-subtle" id="failed_today" rows="2" 
+                                  placeholder="• 原本想做完卻沒搞定、因為煩躁放棄了某件事...">{{ entry.failed_today|default:'' }}</textarea>
+                    </div>
+
+                    <!-- 第 4 問 -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold text-dark mb-0">
+                                4. 為什麼不想做？ / 當下心情 <span class="fw-normal text-muted">(誠實傾聽內心的抗拒)</span>
+                            </label>
+                            <button type="button" class="btn-spark-dice" onclick="rollSparkTip(4)" data-tippy-content="擲骰子換個靈感提示">
+                                🎲 <span class="small font-serif">換個提示</span>
+                            </button>
+                        </div>
+                        <div id="sparkTip4" class="spark-note mb-2 py-1 px-2 d-none"></div>
+                        <textarea class="form-control dot-grid-input" id="resistance_today" rows="2" 
+                                  placeholder="• 覺得疲憊、害怕面對不確定性、心浮氣躁...">{{ entry.resistance_today|default:'' }}</textarea>
+                    </div>
+                </div>
+
+                <!-- 自由速寫模式 (預設隱藏) -->
+                <div id="freeModeSection" class="d-none mb-3 mt-3">
+                    <label class="form-label small fw-bold text-dark">
+                        今日自由手帳隨筆 <span class="fw-normal text-muted">(不拘形式，寫下腦海裡的混亂與文字)</span>
+                    </label>
+                    <textarea class="form-control dot-grid-input" id="raw_content" rows="12" 
+                              placeholder="在這裡隨意寫下今天的混亂、牢騷、嘗試或微小頓悟...">{{ entry.raw_content|default:'' }}</textarea>
+                </div>
+
+                <!-- 底部墨水字數計量 & 存檔按鈕 -->
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4 pt-2 gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- 墨水瓶計量器 -->
+                        <div class="inkwell-counter" data-tippy-content="即時字數統計與墨水量">
+                            <span>🖋️</span>
+                            <span id="charCountLabel">0 字</span>
+                            <div class="ink-level-bar">
+                                <div class="ink-level-fill" id="inkFillBar"></div>
+                            </div>
+                        </div>
+                        <span class="small text-muted font-serif d-none d-md-inline">
+                            • 誠實寫下即可
+                        </span>
+                    </div>
+
+                    <button type="submit" class="btn btn-ink px-4 py-2" id="submitTraceBtn">
+                        <i class="bi bi-pen me-2"></i> <span id="submitBtnText">留下一頁痕跡</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- 沉澱後的今日簡記與靈魂提問明信片 -->
+            <div id="reflectionContainer" class="mt-4 pt-3 border-top {% if not reflection %}d-none{% endif %}">
+                <div class="soul-letter airmail-card mt-3">
+                    <!-- 復古郵票角落 -->
+                    <div class="soul-letter-stamp">
+                        <span class="font-handwrite fw-bold fs-6">SOUL</span>
+                        <span>POST</span>
+                    </div>
+
+                    <!-- 今日簡記 -->
+                    <div class="mb-3 pe-5">
+                        <span class="badge bg-secondary-subtle text-secondary small mb-2 font-serif">
+                            <i class="bi bi-book-half me-1"></i> 今日簡記 • 混亂的沉澱
+                        </span>
+                        <p class="fst-italic text-dark mb-0 font-serif" style="font-size: 1.05rem; line-height: 1.9;" id="reflectionSummary">
+                            {{ reflection.summary|default:'' }}
+                        </p>
+                    </div>
+
+                    <hr class="my-3 text-secondary-subtle">
+
+                    <!-- 頁緣觀察 -->
+                    <div class="mb-3">
+                        <span class="small fw-bold text-muted font-serif">
+                            <i class="bi bi-eye me-1"></i> 頁緣觀察
+                        </span>
+                        <p class="mt-1 mb-0 small text-secondary font-serif" id="reflectionBlindspot">
+                            {{ reflection.blindspot|default:'' }}
+                        </p>
+                    </div>
+
+                    <hr class="my-3 text-secondary-subtle">
+
+                    <!-- 靈魂提問 -->
+                    <div class="mb-2">
+                        <span class="small fw-bold text-dark text-uppercase letter-spacing-2">
+                            <i class="bi bi-question-diamond me-1 text-warning"></i> 靈魂提問
+                        </span>
+                        <h3 class="fs-5 fw-bold text-dark mt-2 mb-3 font-serif" id="reflectionQuestion" style="color: #1f2d3d;">
+                            「{{ reflection.soul_question|default:'' }}」
+                        </h3>
+                        
+                        <!-- 手寫隨筆回答框 -->
+                        <div class="mt-3">
+                            <textarea id="userAnswerInput" rows="2" class="form-control dot-grid-input small" 
+                                      placeholder="[今晚隨筆] 在這裡寫下今晚的一點體會（或直接闔上手帳，留給自己一夜沉澱）...">{{ reflection.user_answer|default:'' }}</textarea>
+                            <div class="d-flex justify-content-end mt-2">
+                                <button type="button" class="btn-wax-seal" onclick="saveAnswer()">
+                                    <span>🏵️</span> 烙印今晚筆記
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右頁：時間的回音與故事小冊 -->
+    <div class="col-12 col-lg-4" id="rightPageCol">
+        <div class="handbook-card p-4 position-relative sticky-top" style="top: 5.5rem;">
+            <!-- 和紙膠帶裝飾 -->
+            <div class="washi-tape washi-rose"></div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="fs-6 fw-bold text-dark mb-0">
+                    <i class="bi bi-hourglass-split me-1 text-warning"></i> 時間的回音 (Echo)
+                </h3>
+                <span class="badge bg-light text-secondary border small font-handwrite">Looking Back</span>
+            </div>
+
+            <!-- 回音便籤盒 -->
+            <div class="echo-torn-paper mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-dark small font-serif">{{ time_echo.title }}</span>
+                    <span class="small text-muted font-handwrite fs-6">{{ time_echo.date_str }}</span>
+                </div>
+                <p class="mb-0 mt-2 text-secondary fst-italic small font-serif" style="line-height: 1.8;">
+                    {{ time_echo.content }}
+                </p>
+            </div>
+
+            <!-- 故事節錄卡片 -->
+            <div class="p-3 bg-light rounded-2 border border-secondary-subtle my-3">
+                <span class="badge bg-secondary-subtle text-secondary small mb-2 font-serif">第二章｜留下痕跡</span>
+                <p class="small text-muted mb-0 font-serif" style="line-height: 1.7;">
+                    「回頭看才發現，有些事情我以為自己做了很多，其實根本沒有。<br>
+                    有些事情我以為自己一直在失敗，卻已經比以前走遠了一點。」
+                </p>
+            </div>
+
+            <!-- 手繪便籤小彩蛋 -->
+            <div class="p-3 bg-warning-subtle rounded-2 border border-warning-subtle text-dark small font-serif">
+                <i class="bi bi-lightbulb me-1 text-warning"></i>
+                <strong>手帳心法：</strong> 不用強求每天都有豐功偉業。真實寫下抗拒與卡頓，本身就是最深邃的成長痕跡。
+            </div>
+
+            <div class="text-center mt-3 pt-1">
+                <a href="{% url 'journal:river' %}" class="small text-secondary text-decoration-none d-inline-flex align-items-center">
+                    <span>翻閱時間河流中的過往篇章</span>
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isFreeMode = false;
+    let isZenMode = false;
+    let currentEntryId = {% if entry %}{{ entry.id }}{% else %}null{% endif %};
+    let selectedWeather = '{{ entry.weather|default:"sunny" }}';
+    let selectedMood = '{{ entry.mood|default:"chaos" }}';
+    const DRAFT_KEY = "trace_draft_{{ today|date:'Ymd' }}";
+
+    // 靈感提示骰子庫
+    const SPARK_TIPS = {
+        1: [
+            "• 哪怕只是寫了兩行代碼、讀了半篇文章，甚至是整理了書桌",
+            "• 哪怕只是鼓起勇氣打開了那個逃避好幾天的檔案",
+            "• 哪怕只是坐在椅子上安靜思考了十分鐘接下來要先做什麼"
+        ],
+        2: [
+            "• 發現了某個新工具或快捷鍵、或想通了為什麼之前會卡住",
+            "• 學到了：自己什麼時候精神最集中，什麼時候需要放空充電",
+            "• 明白了一件事：慢慢做反而比焦急趕工走得更穩"
+        ],
+        3: [
+            "• 原本打算做完卻中途滑了半小時手機，誠實寫下",
+            "• 試了半天還是報錯，最後感到沮喪關掉了視窗",
+            "• 承認自己今天真的沒在狀態，不用給自己道德審判"
+        ],
+        4: [
+            "• 其實是害怕做出來不夠完美，所以遲遲不敢開始",
+            "• 只是純粹太疲憊了，大腦像浸了水一樣轉不動",
+            "• 心裡在嘀咕這件事到底有沒有意義，感到盲目"
+        ]
+    };
+    let sparkTipIndices = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+    function rollSparkTip(qNum) {
+        if (window.journalSFX) window.journalSFX.playPageTurn();
+        const box = document.getElementById(`sparkTip${qNum}`);
+        if (!box) return;
+        
+        const list = SPARK_TIPS[qNum];
+        sparkTipIndices[qNum] = (sparkTipIndices[qNum] + 1) % list.length;
+        box.innerText = list[sparkTipIndices[qNum]];
+        box.classList.remove('d-none');
+        box.classList.add('animate__animated', 'animate__fadeIn');
+    }
+
+    // 氣象與心情印章選擇
+    function selectWeather(btn, val) {
+        if (window.journalSFX) window.journalSFX.playStampThud();
+        selectedWeather = val;
+        btn.parentElement.querySelectorAll('.stamp-btn').forEach(b => {
+            if (b.innerText.includes('晴') || b.innerText.includes('雨') || b.innerText.includes('夜')) {
+                b.classList.remove('active');
+            }
+        });
+        btn.classList.add('active');
+        debounceAutoSave();
+    }
+
+    function selectMood(btn, val) {
+        if (window.journalSFX) window.journalSFX.playStampThud();
+        selectedMood = val;
+        btn.parentElement.querySelectorAll('.stamp-btn').forEach(b => {
+            if (b.innerText.includes('微光') || b.innerText.includes('混亂') || b.innerText.includes('萌芽')) {
+                b.classList.remove('active');
+            }
+        });
+        btn.classList.add('active');
+        if (val === 'sparks' || val === 'sprout') {
+            fireSproutSparkles();
+        }
+        debounceAutoSave();
+    }
+
+    // 沉浸專注模式切換
+    function toggleZenMode() {
+        if (window.journalSFX) window.journalSFX.playPageTurn();
+        isZenMode = !isZenMode;
+        document.body.classList.toggle('zen-focus-mode', isZenMode);
+        const zenBtn = document.getElementById('zenToggleBtn');
+        const zenText = document.getElementById('zenText');
+        if (isZenMode) {
+            zenBtn.classList.add('btn-dark');
+            zenBtn.classList.remove('btn-outline-secondary');
+            zenText.innerText = "退出專注 (Esc)";
+        } else {
+            zenBtn.classList.remove('btn-dark');
+            zenBtn.classList.add('btn-outline-secondary');
+            zenText.innerText = "專注模式";
+        }
+    }
+
+    // 支援 Esc 鍵退出專注模式
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isZenMode) {
+            toggleZenMode();
+        }
+    });
+
+    // 鋼筆書寫聲音節流器
+    let lastPenSoundTime = 0;
+    function triggerPenSound() {
+        const now = Date.now();
+        if (now - lastPenSoundTime > 120) {
+            lastPenSoundTime = now;
+            if (window.journalSFX) window.journalSFX.playPenScratch();
+        }
+    }
+
+    // 更新墨水量與字數
+    function updateCharCount() {
+        let totalChars = 0;
+        if (isFreeMode) {
+            totalChars = document.getElementById('raw_content').value.length;
+        } else {
+            totalChars = (document.getElementById('did_today').value.length +
+                          document.getElementById('learned_today').value.length +
+                          document.getElementById('failed_today').value.length +
+                          document.getElementById('resistance_today').value.length);
+        }
+        const label = document.getElementById('charCountLabel');
+        const bar = document.getElementById('inkFillBar');
+        if (label) label.innerText = `${totalChars} 字`;
+        if (bar) {
+            const percentage = Math.min(100, Math.round((totalChars / 300) * 100));
+            bar.style.width = `${percentage}%`;
+            if (percentage > 70) {
+                bar.style.backgroundColor = 'var(--ochre-gold)';
+            } else {
+                bar.style.backgroundColor = 'var(--ink-primary)';
+            }
+        }
+    }
+
+    // 頁面載入時檢查是否還原草稿
+    document.addEventListener("DOMContentLoaded", () => {
+        {% if not entry %}
+        const savedDraft = localStorage.getItem(DRAFT_KEY);
+        if (savedDraft) {
+            try {
+                const data = JSON.parse(savedDraft);
+                if (data.did_today) document.getElementById('did_today').value = data.did_today;
+                if (data.learned_today) document.getElementById('learned_today').value = data.learned_today;
+                if (data.failed_today) document.getElementById('failed_today').value = data.failed_today;
+                if (data.resistance_today) document.getElementById('resistance_today').value = data.resistance_today;
+                if (data.raw_content) document.getElementById('raw_content').value = data.raw_content;
+                document.getElementById('autoSaveStatus').innerText = "已從本機還原未存草稿";
+            } catch (e) {}
+        }
+        {% endif %}
+
+        // 監聽輸入以執行 debounce 本機自動暫存、墨水聲與字數
+        const inputs = ['did_today', 'learned_today', 'failed_today', 'resistance_today', 'raw_content'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => {
+                    triggerPenSound();
+                    updateCharCount();
+                    debounceAutoSave();
+                });
+            }
+        });
+
+        updateCharCount();
+    });
+
+    let autoSaveTimer = null;
+    function debounceAutoSave() {
+        const inkDot = document.getElementById('inkDot');
+        if (inkDot) inkDot.classList.add('writing');
+        document.getElementById('autoSaveStatus').innerText = "墨水書寫中...";
+
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+            const data = {
+                did_today: document.getElementById('did_today').value,
+                learned_today: document.getElementById('learned_today').value,
+                failed_today: document.getElementById('failed_today').value,
+                resistance_today: document.getElementById('resistance_today').value,
+                raw_content: document.getElementById('raw_content').value,
+                weather: selectedWeather,
+                mood: selectedMood,
+            };
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+            if (inkDot) inkDot.classList.remove('writing');
+            document.getElementById('autoSaveStatus').innerText = "墨跡已自動隱入紙張";
+        }, 500);
+    }
+
+    // 切換四問 / 自由速寫模式
+    function toggleWritingMode() {
+        if (window.journalSFX) window.journalSFX.playPageTurn();
+        isFreeMode = !isFreeMode;
+        const fourSec = document.getElementById('fourQuestionsSection');
+        const freeSec = document.getElementById('freeModeSection');
+        const modeText = document.getElementById('modeText');
+
+        if (isFreeMode) {
+            const did = document.getElementById('did_today').value.trim();
+            const learned = document.getElementById('learned_today').value.trim();
+            const failed = document.getElementById('failed_today').value.trim();
+            const resist = document.getElementById('resistance_today').value.trim();
+            let raw = document.getElementById('raw_content').value.trim();
+
+            if (!raw && (did || learned || failed || resist)) {
+                let parts = [];
+                if (did) parts.push(`【做了什麼】\n${did}`);
+                if (learned) parts.push(`【學到了什麼】\n${learned}`);
+                if (failed) parts.push(`【哪裡失敗了】\n${failed}`);
+                if (resist) parts.push(`【抗拒與心情】\n${resist}`);
+                document.getElementById('raw_content').value = parts.join('\n\n');
+            }
+
+            fourSec.classList.add('d-none');
+            freeSec.classList.remove('d-none');
+            modeText.innerText = "切換為故事四問";
+        } else {
+            fourSec.classList.remove('d-none');
+            freeSec.classList.add('d-none');
+            modeText.innerText = "切換為自由速寫";
+        }
+        updateCharCount();
+    }
+
+    // 提交今日痕跡
+    function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const did = document.getElementById('did_today').value.trim();
+        const learned = document.getElementById('learned_today').value.trim();
+        const failed = document.getElementById('failed_today').value.trim();
+        const resist = document.getElementById('resistance_today').value.trim();
+        const raw = document.getElementById('raw_content').value.trim();
+
+        if (!did && !learned && !failed && !resist && !raw) {
+            alert('請至少留下一句今天的微小痕跡。');
+            return false;
+        }
+
+        const btn = document.getElementById('submitTraceBtn');
+        const btnText = document.getElementById('submitBtnText');
+        btn.disabled = true;
+        btnText.innerText = "墨水風乾中...";
+
+        fetch("{% url 'journal:api_save' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                did_today: did,
+                learned_today: learned,
+                failed_today: failed,
+                resistance_today: resist,
+                raw_content: raw,
+                weather: selectedWeather,
+                mood: selectedMood
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            btnText.innerText = "留下一頁痕跡";
+
+            if (data.success) {
+                currentEntryId = data.entry_id;
+                localStorage.removeItem(DRAFT_KEY);
+                document.getElementById('autoSaveStatus').innerText = "今日痕跡已歸檔";
+
+                // 播放蓋章聲音與彩帶
+                if (window.journalSFX) window.journalSFX.playStampThud();
+                fireJournalConfetti();
+
+                // 顯示印章戳記
+                const stamp = document.getElementById('stampSeal');
+                stamp.classList.remove('d-none');
+                stamp.classList.add('stamp-sealed-anim');
+
+                // 展示沉澱與靈魂提問
+                document.getElementById('reflectionSummary').innerText = data.reflection.summary;
+                document.getElementById('reflectionBlindspot').innerText = data.reflection.blindspot;
+                document.getElementById('reflectionQuestion').innerText = `「${data.reflection.soul_question}」`;
+                document.getElementById('userAnswerInput').value = data.reflection.user_answer || '';
+                
+                const container = document.getElementById('reflectionContainer');
+                container.classList.remove('d-none');
+                container.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert(data.error || '儲存失敗，請重試');
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btnText.innerText = "留下一頁痕跡";
+            alert('連線失敗，請檢查網路連線');
+        });
+
+        return false;
+    }
+
+    // 保存靈魂提問的心得筆記
+    function saveAnswer() {
+        if (!currentEntryId) return;
+        const answer = document.getElementById('userAnswerInput').value.trim();
+
+        fetch("{% url 'journal:api_answer' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                entry_id: currentEntryId,
+                answer: answer
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (window.journalSFX) window.journalSFX.playChime();
+                fireSproutSparkles();
+                alert('今晚手寫筆記已烙印留存。');
+            } else {
+                alert('保存失敗：' + (data.error || ''));
+            }
+        });
+    }
+</script>
+{% endblock %}

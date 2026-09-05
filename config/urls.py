@@ -1,5 +1,5 @@
 """
-URL configuration for AI 學習日誌系統（子彈筆記） (The Bullet Journal Method System).
+URL configuration for 留下痕跡：手帳學習日誌 (02-AILearningJournalSystem).
 """
 
 from django.contrib import admin
@@ -9,9 +9,7 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('inventory/', include('inventory.urls')),
     path('goals/', include('goals.urls')),
     path('journal/', include('journal.urls')),
-    path('reports/', include('reports.urls')),
     path('', lambda request: redirect('journal:today')),
 ]

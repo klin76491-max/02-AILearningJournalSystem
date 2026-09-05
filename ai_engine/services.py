@@ -1,231 +1,116 @@
-"""
-AI 服務層 (AISummaryService)
-"""
-
 import os
 import json
-import re
+import random
 import logging
-from django.conf import settings
-from .prompts import (
-    BULLET_PARSING_SYSTEM_PROMPT,
-    DAILY_REFLECTION_PROMPT_TEMPLATE,
-    WEEKLY_REPORT_PROMPT_TEMPLATE
-)
+from .default_questions import DEFAULT_SOUL_QUESTIONS
 
 logger = logging.getLogger(__name__)
 
+SYSTEM_PROMPT = """你是一本安靜手帳背後的文字抄寫員（The Scribe）與一面溫和誠實的鏡子。
+在《04_Story.md》第二章中，探索者每天記錄今天做了什麼、學了什麼、哪裡失敗了、為什麼不想做。人的日子往往比想像中混亂。
+請依據使用者今天寫下的零散文字，安靜地完成三件事：
+1. 今日簡記 (summary)：用 2~3 句樸素、乾淨、溫和的語言，幫他把瑣碎混亂的文字整理成一段客觀沉澱的今日紀錄，像手帳裡的正式定稿。
+2. 頁緣觀察 (blindspot)：用 1~2 句話，溫和但誠實地點出他今天可能在逃避什麼，或指出他在自責中忽略的真實前進。
+3. 靈魂提問 (soul_question)：提出 1 句直擊靈魂、發人深省的哲思提問，留給他在夜晚闔上筆記本時帶入沉思。
 
-class AISummaryService:
-    @classmethod
-    def get_api_key(cls) -> str:
-        return getattr(settings, 'GEMINI_API_KEY', '') or os.getenv('GEMINI_API_KEY', '')
+嚴格輸出合法純 JSON 格式，不要加入 Markdown 代碼塊標籤：
+{
+  "summary": "...",
+  "blindspot": "...",
+  "soul_question": "..."
+}
+"""
 
-    @classmethod
-    def get_client(cls):
-        api_key = cls.get_api_key()
-        if not api_key or api_key.startswith('mock-') or api_key == 'your-google-gemini-api-key':
-            return None
-        try:
-            from google import genai
-            return genai.Client(api_key=api_key)
-        except Exception as e:
-            logger.warning(f"無法初始化 Google GenAI Client：{e}")
-            return None
 
-    @classmethod
-    def _clean_json_response(cls, text: str) -> str:
-        cleaned = text.strip()
-        if cleaned.startswith('```json'):
-            cleaned = cleaned[7:]
-        elif cleaned.startswith('```'):
-            cleaned = cleaned[3:]
-        if cleaned.endswith('```'):
-            cleaned = cleaned[:-3]
-        return cleaned.strip()
+class SoulReflectionEngine:
+    """
+    雙軌靈魂提問與文字沉澱引擎：
+    優先嘗試 Google AI (Gemini)，若未配置或異常則無縫降級至 100 句預設題庫。
+    """
 
     @classmethod
-    def parse_raw_text_to_bullets(cls, raw_text: str) -> list:
-        if not raw_text or not raw_text.strip():
-            return []
+    def generate_reflection(cls, did_today='', learned_today='', failed_today='', resistance_today='', raw_content=''):
+        """
+        傳入四問或自由文本，產出 { summary, blindspot, soul_question, source }
+        """
+        user_content_parts = []
+        if did_today:
+            user_content_parts.append(f"【今天做了什麼】\n{did_today}")
+        if learned_today:
+            user_content_parts.append(f"【今天學到了什麼】\n{learned_today}")
+        if failed_today:
+            user_content_parts.append(f"【哪裡失敗了】\n{failed_today}")
+        if resistance_today:
+            user_content_parts.append(f"【為什麼不想做 / 心情】\n{resistance_today}")
+        if raw_content:
+            user_content_parts.append(f"【自由速寫】\n{raw_content}")
 
-        client = cls.get_client()
-        if not client:
-            return cls._fallback_rule_parse(raw_text)
+        combined_text = "\n\n".join(user_content_parts).strip()
+        if not combined_text:
+            combined_text = "今天留下了空白的痕跡。"
 
-        try:
-            from google.genai import types
-            prompt = f"{BULLET_PARSING_SYSTEM_PROMPT}\n\n【使用者輸入文字】：\n{raw_text}"
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    temperature=0.2
-                )
-            )
-            cleaned_text = cls._clean_json_response(response.text)
-            data = json.loads(cleaned_text)
-            if isinstance(data, list):
-                validated = []
-                for item in data:
-                    if isinstance(item, dict) and 'content' in item:
-                        validated.append({
-                            'type': item.get('type', 'task'),
-                            'content': str(item.get('content', '')).strip(),
-                            'is_completed': bool(item.get('is_completed', False)),
-                            'priority': item.get('priority', 'none')
-                        })
-                return validated if validated else cls._fallback_rule_parse(raw_text)
-            return cls._fallback_rule_parse(raw_text)
-        except Exception as e:
-            logger.error(f"Gemini 子彈解析錯誤，切換至降級規則：{e}")
-            return cls._fallback_rule_parse(raw_text)
+        api_key = os.getenv("GEMINI_API_KEY")
+        if api_key:
+            try:
+                result = cls._call_gemini(api_key, combined_text)
+                if result:
+                    result['source'] = 'gemini'
+                    return result
+            except Exception as e:
+                logger.warning(f"Google AI 呼叫失敗，降級至預設題庫: {e}")
+
+        return cls._fallback_reflection(did_today, failed_today, resistance_today, combined_text)
 
     @classmethod
-    def generate_daily_reflection(cls, entry_date_str: str, bullets_data: list, mood_score: int = 3) -> dict:
-        client = cls.get_client()
-        if not client or not bullets_data:
-            return cls._fallback_daily_reflection(bullets_data, mood_score)
+    def _call_gemini(cls, api_key, text):
+        from google import genai
+        client = genai.Client(api_key=api_key)
 
-        bullets_text = "\n".join([
-            f"- [{b.get('type', 'item')}] {'[x]' if b.get('is_completed') else '[ ]'} {b.get('content', '')}"
-            for b in bullets_data
-        ])
-
-        prompt = DAILY_REFLECTION_PROMPT_TEMPLATE.format(
-            entry_date=entry_date_str,
-            mood_score=mood_score,
-            bullets_text=bullets_text
+        prompt = f"{SYSTEM_PROMPT}\n\n使用者今日日記：\n{text}"
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
         )
 
-        try:
-            from google.genai import types
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    temperature=0.7
-                )
-            )
-            cleaned_text = cls._clean_json_response(response.text)
-            result = json.loads(cleaned_text)
-            if isinstance(result, dict) and 'summary' in result and 'reflection' in result:
-                return result
-            return cls._fallback_daily_reflection(bullets_data, mood_score)
-        except Exception as e:
-            logger.error(f"Gemini 反思生成錯誤，切換至降級生成：{e}")
-            return cls._fallback_daily_reflection(bullets_data, mood_score)
+        response_text = response.text.strip()
+        # 清理可能夾帶的 ```json 標籤
+        if response_text.startswith("```"):
+            lines = response_text.splitlines()
+            if lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].startswith("```"):
+                lines = lines[:-1]
+            response_text = "\n".join(lines).strip()
 
-    @classmethod
-    def generate_weekly_report(cls, start_date_str: str, end_date_str: str, stats: dict, sample_bullets: list) -> dict:
-        client = cls.get_client()
-        if not client:
-            return cls._fallback_weekly_report(stats)
-
-        bullets_str = "\n".join([f"- {b}" for b in sample_bullets[:20]])
-        prompt = WEEKLY_REPORT_PROMPT_TEMPLATE.format(
-            start_date=start_date_str,
-            end_date=end_date_str,
-            total_bullets=stats.get('total_bullets', 0),
-            total_tasks=stats.get('total_tasks', 0),
-            completed_tasks=stats.get('completed_tasks', 0),
-            completion_rate=stats.get('completion_rate', 0),
-            note_count=stats.get('note_count', 0),
-            obstacle_count=stats.get('obstacle_count', 0),
-            reflection_count=stats.get('reflection_count', 0),
-            sample_bullets=bullets_str or '無明細'
-        )
-
-        try:
-            from google.genai import types
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    temperature=0.6
-                )
-            )
-            cleaned_text = cls._clean_json_response(response.text)
-            result = json.loads(cleaned_text)
-            if isinstance(result, dict) and 'core_learnings' in result:
-                return result
-            return cls._fallback_weekly_report(stats)
-        except Exception as e:
-            logger.error(f"Gemini 週報生成失敗，使用降級內容：{e}")
-            return cls._fallback_weekly_report(stats)
-
-    @classmethod
-    def _fallback_rule_parse(cls, raw_text: str) -> list:
-        items = []
-        for line in raw_text.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-
-            clean_content = re.sub(r'#\w+', '', line).strip()
-
-            if line.startswith(('•', '*', '[ ]', '1.', '2.', '3.', '4.', '5.')):
-                items.append({
-                    'type': 'task',
-                    'content': clean_content.lstrip('•*[]1234567890. '),
-                    'is_completed': False,
-                    'priority': 'none'
-                })
-            elif line.startswith(('[x]', '[X]', 'v ', 'V ')):
-                items.append({
-                    'type': 'task',
-                    'content': clean_content.lstrip('[xXvV] '),
-                    'is_completed': True,
-                    'priority': 'none'
-                })
-            elif line.startswith(('!', '！', '踩坑', '卡點', '錯誤', 'bug', 'Bug')):
-                items.append({
-                    'type': 'obstacle',
-                    'content': clean_content.lstrip('!！ '),
-                    'is_completed': False,
-                    'priority': 'high'
-                })
-            elif line.startswith(('★', '★', '反思', '心得', '感覺', '思考')):
-                items.append({
-                    'type': 'reflection',
-                    'content': clean_content.lstrip('★ '),
-                    'is_completed': False,
-                    'priority': 'medium'
-                })
-            elif line.startswith(('○', 'o', 'O', '事件', '會議', '聚會')):
-                items.append({
-                    'type': 'event',
-                    'content': clean_content.lstrip('○oO. '),
-                    'is_completed': False,
-                    'priority': 'none'
-                })
-            else:
-                items.append({
-                    'type': 'note',
-                    'content': clean_content.lstrip('-— '),
-                    'is_completed': False,
-                    'priority': 'none'
-                })
-        return items
-
-    @classmethod
-    def _fallback_daily_reflection(cls, bullets_data: list, mood_score: int) -> dict:
-        total = len(bullets_data)
-        completed = len([b for b in bullets_data if b.get('is_completed')])
+        data = json.loads(response_text)
         return {
-            "summary": f"今天共記錄了 {total} 個項目，完成了 {completed} 項待辦任務。",
-            "reflection": "每天留下一點痕跡，發現自己的日子其實比想像中混亂，但看見這些混亂，就是前進的開始。明天試著做完最想做的一件小事。"
+            'summary': data.get('summary', '').strip(),
+            'blindspot': data.get('blindspot', '').strip(),
+            'soul_question': data.get('soul_question', '').strip(),
         }
 
     @classmethod
-    def _fallback_weekly_report(cls, stats: dict) -> dict:
-        total = stats.get('total_bullets', 0)
-        rate = stats.get('completion_rate', 0)
+    def _fallback_reflection(cls, did_today, failed_today, resistance_today, combined_text):
+        """
+        降級方案：從 100 句經典預設題庫抽取
+        """
+        question = random.choice(DEFAULT_SOUL_QUESTIONS)
+
+        # 樸素的文字整理
+        if did_today:
+            first_line = did_today.splitlines()[0][:60]
+            summary = f"今天你著手嘗試了：{first_line}。儘管過程中有許多細碎的感受，但你依然把今天的真實留在了紙上。"
+        else:
+            summary = "今天你花時間停了下來，誠實寫下了心裡的混亂與體會。承認狀態也是生活的一部分。"
+
+        if failed_today or resistance_today:
+            blindspot = "你在文字裡誠實地面對了自己的阻礙與不想做。看見抗拒本身，就是走出停滯的第一步。"
+        else:
+            blindspot = "日子往往比想像中混亂，但你今天留下的每筆墨跡，都在證明你沒有在原地停滯。"
+
         return {
-            "core_learnings": f"本週累計留下了 {total} 條生活與學習痕跡，任務完成率達到 {rate}%。持續記錄本身就是最具價值的累積。",
-            "recurring_obstacles": "有時在面對較大或較模糊的任務時容易產生猶豫與停滯。",
-            "growth_advice": "下週建議嘗試在速記時將大任務拆解成 2~3 個可在 20 分鐘內完成的小子彈項目。"
+            'summary': summary,
+            'blindspot': blindspot,
+            'soul_question': question,
+            'source': 'default_pool'
         }

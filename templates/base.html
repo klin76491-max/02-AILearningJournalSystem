@@ -2,128 +2,312 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}A Little Wonder · 子彈筆記與人生方向系統{% endblock %}</title>
-  
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}留下痕跡｜手帳學習日誌{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Tippy.js light-border theme -->
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css"/>
+    <!-- 手帳專屬美學樣式 -->
+    <link rel="stylesheet" href="{% static 'css/handbook.css' %}">
+    
+    <style>
+        /* 導航列：深藍墨水手帳書脊質地 */
+        .journal-nav {
+            background-color: var(--ink-primary);
+            border-bottom: 2px solid #14202c;
+            padding: 0.75rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 100;
+        }
 
-  <!-- Bootstrap 5.3 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  
-  <!-- 簡潔手帳風格核心樣式 -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/bullet.css' %}">
-  
-  {% block extra_head %}{% endblock %}
+        .journal-nav .navbar-brand {
+            color: #f7f4ed;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            font-size: 1.15rem;
+        }
+
+        .journal-nav .nav-link {
+            color: #d2cbbf;
+            font-size: 0.92rem;
+            transition: color 0.2s ease;
+        }
+
+        .journal-nav .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .btn-ink {
+            background-color: var(--ink-primary);
+            color: #f7f4ed;
+            border: 1px solid var(--ink-primary);
+            padding: 0.65rem 1.6rem;
+            border-radius: 6px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .btn-ink:hover {
+            background-color: #2b3e54;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(31, 45, 61, 0.18);
+        }
+
+        .badge-goal {
+            background-color: #f1ebd8;
+            color: var(--ink-primary);
+            border: 1px solid #ddd5be;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: background-color 0.2s;
+        }
+
+        .badge-goal:hover {
+            background-color: #e9e1c9;
+        }
+
+        footer {
+            margin-top: auto;
+            border-top: 1px dashed var(--border-soft);
+            padding: 2.2rem 0;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- 手帳頂部導航 -->
+    <nav class="navbar navbar-expand-lg journal-nav sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'journal:today' %}">
+                <i class="bi bi-book me-2 text-warning"></i> 留下痕跡
+                <span class="ms-2 font-handwrite text-warning small fs-6" style="opacity: 0.9;">The Trace Log</span>
+            </a>
+            
+            <button class="navbar-toggler border-0 text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <i class="bi bi-list fs-4"></i>
+            </button>
 
-  <!-- 全域極簡導航列 -->
-  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-    <div class="container-fluid max-w-1200">
-      <a class="navbar-brand d-flex align-items-center" href="{% url 'journal:today' %}">
-        <span class="me-2 fs-5">🌿</span>
-        <span class="fw-bold">A Little Wonder</span>
-      </a>
-      
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarMain">
-        {% if user.is_authenticated %}
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.view_name == 'journal:today' %}active{% endif %}" 
-               href="{% url 'journal:today' %}">
-              <i class="bi bi-calendar-check me-1 opacity-75"></i>今日日誌
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'inventory' in request.path %}active{% endif %}" 
-               href="{% url 'inventory:list' %}">
-              <i class="bi bi-tree me-1 opacity-75"></i>人生清單
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'goals' in request.path %}active{% endif %}" 
-               href="{% url 'goals:list' %}">
-              <i class="bi bi-bullseye me-1 opacity-75"></i>核心目標
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'monthly' in request.path %}active{% endif %}" 
-               href="{% url 'journal:monthly' %}">
-              <i class="bi bi-calendar3 me-1 opacity-75"></i>月誌
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'future-log' in request.path %}active{% endif %}" 
-               href="{% url 'journal:future_log' %}">
-              <i class="bi bi-compass me-1 opacity-75"></i>未來誌
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'reports' in request.path %}active{% endif %}" 
-               href="{% url 'reports:list' %}">
-              <i class="bi bi-graph-up me-1 opacity-75"></i>成長週報
-            </a>
-          </li>
-        </ul>
-        
-        <div class="d-flex align-items-center gap-2">
-          <span class="text-secondary small d-none d-md-inline me-1">
-            <i class="bi bi-person me-1"></i>{{ user.first_name|default:user.username }}
-          </span>
-          <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary btn-sm">
-            登出
-          </a>
+            <div class="collapse navbar-collapse" id="navContent">
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link d-flex align-items-center" href="{% url 'journal:river' %}" data-tippy-content="漫步翻看時間河流裡的每日痕跡">
+                            <i class="bi bi-water me-1 text-info"></i> 時間河流
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <!-- 觸感音效切換 -->
+                    <button type="button" class="btn btn-sm btn-outline-light py-1 px-2" id="soundToggleBtn" onclick="toggleHandbookSound()" data-tippy-content="手帳音效：翻頁、書寫、蓋印">
+                        <span id="soundIcon">🔊</span> <span class="d-none d-sm-inline" id="soundText">音效</span>
+                    </button>
+
+                    {% if active_goal %}
+                    <span class="badge-goal d-none d-md-inline-block" data-tippy-content="點擊鉛筆隨時更換前進方向">
+                        🔖 方向：{{ active_goal.title|truncatechars:22 }}
+                        <a href="javascript:void(0)" onclick="openGoalModal()" class="text-decoration-none ms-1 text-muted" title="更換前進方向">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </span>
+                    {% endif %}
+
+                    <span class="text-white-50 small ms-1">
+                        {{ user.first_name|default:user.username }}
+                    </span>
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-sm btn-outline-light py-1 px-2" style="font-size: 0.8rem;">
+                        闔上手帳
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
-        {% else %}
-        <div class="ms-auto">
-          <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm px-3">
-            Google 登入
-          </a>
-        </div>
+    </nav>
+
+    <!-- 系統訊息 -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-secondary border-0 alert-dismissible fade show small py-2 px-3 animate__animated animate__fadeInDown" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
         {% endif %}
-      </div>
     </div>
-  </nav>
 
-  <!-- 全域訊息提示 -->
-  <div class="container my-3 max-w-1200">
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border rounded-md small py-2 px-3 mb-2" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" style="padding: 0.75rem;"></button>
+    <!-- 主內容區 -->
+    <main class="container py-3 py-md-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 更換方向便籤對話框 (Modal) -->
+    <div class="modal fade" id="goalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content handbook-card border-0 p-4 position-relative">
+                <div class="washi-tape washi-mint" style="top: -12px; left: 30px;"></div>
+                <div class="modal-header border-0 pb-1">
+                    <h5 class="modal-title fs-6 fw-bold">
+                        🔖 換個前進的方向
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-3 font-serif">
+                        「走著走著如果發現走偏了，或者原來的挑戰已經結束，這很正常。換個新方向，之前的每頁痕跡依然會留在時間河流裡。」
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">這段時間，你想試著專注的一件事是……</label>
+                        <input type="text" id="modalGoalTitle" class="form-control dot-grid-input" placeholder="例如：每天讀一篇短篇、或是每天給自己二十分鐘寫作">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">為什麼想換這個方向？ (初心，選填)</label>
+                        <textarea id="modalGoalWhy" rows="2" class="form-control dot-grid-input" placeholder="寫給未來的自己一兩句心裡話"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">暫時不換</button>
+                    <button type="button" class="btn btn-sm btn-ink" onclick="submitNewGoal()">確定定下新方向</button>
+                </div>
+            </div>
         </div>
-      {% endfor %}
-    {% endif %}
-  </div>
-
-  <!-- 主要內容區 -->
-  <main class="container my-3 mb-5 max-w-1200 flex-grow-1">
-    {% block content %}{% endblock %}
-  </main>
-
-  <!-- 極簡頁尾 -->
-  <footer class="footer-custom text-center">
-    <div class="container max-w-1200">
-      <div class="small text-secondary">A Little Wonder · The Bullet Journal Method</div>
-      <div class="small text-muted mt-1" style="font-size: 0.78rem;">「追蹤過去、釐清現在、設計未來」</div>
     </div>
-  </footer>
 
-  <!-- Bootstrap 5.3 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  
-  {% block extra_js %}{% endblock %}
+    <!-- 頁尾 -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-1 font-serif">「每天留下一點痕跡。不是為了變得更厲害，只是想知道如果一直記下去，我會變成什麼樣子。」</p>
+            <p class="mb-0 text-muted small">《04_Story.md》第二章 • A Little Wonder Handcrafted Notebook</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Popper & Tippy.js 開源工具提示庫 -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <!-- canvas-confetti 開源紙屑庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- 手帳觸感音效庫 -->
+    <script src="{% static 'js/sound_effects.js' %}"></script>
+
+    <script>
+        // 初始化 Tippy.js 浮動工具提示
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.tippy) {
+                tippy('[data-tippy-content]', {
+                    theme: 'light-border',
+                    placement: 'bottom',
+                    animation: 'scale-subtle',
+                    delay: [150, 50],
+                });
+            }
+            updateSoundBtnState();
+        });
+
+        // 音效開關控制
+        function toggleHandbookSound() {
+            if (window.journalSFX) {
+                const isEnabled = window.journalSFX.toggle();
+                updateSoundBtnState();
+            }
+        }
+
+        function updateSoundBtnState() {
+            const btn = document.getElementById('soundToggleBtn');
+            const icon = document.getElementById('soundIcon');
+            const isEnabled = window.journalSFX ? window.journalSFX.enabled : true;
+            if (btn && icon) {
+                if (isEnabled) {
+                    icon.innerText = "🔊";
+                    btn.classList.add('text-light');
+                    btn.classList.remove('text-secondary');
+                } else {
+                    icon.innerText = "🔈";
+                    btn.classList.remove('text-light');
+                    btn.classList.add('text-secondary');
+                }
+            }
+        }
+
+        // 全域手帳彩帶紙片
+        function fireJournalConfetti() {
+            if (window.journalSFX) window.journalSFX.playChime();
+            confetti({
+                particleCount: 50,
+                spread: 75,
+                origin: { y: 0.72 },
+                colors: ['#eedcb4', '#c49a45', '#5a8a6e', '#be6b62', '#1f2d3d', '#e6afa8']
+            });
+        }
+
+        // 萌芽/微光專屬花瓣星芒微粒子
+        function fireSproutSparkles() {
+            if (window.journalSFX) window.journalSFX.playChime();
+            confetti({
+                particleCount: 30,
+                spread: 60,
+                startVelocity: 25,
+                origin: { y: 0.6 },
+                colors: ['#88c09d', '#e2d37c', '#ffffff', '#a8d5ba'],
+                shapes: ['circle', 'square']
+            });
+        }
+
+        let goalModalInstance = null;
+        function openGoalModal() {
+            if (window.journalSFX) window.journalSFX.playPageTurn();
+            if (!goalModalInstance) {
+                goalModalInstance = new bootstrap.Modal(document.getElementById('goalModal'));
+            }
+            goalModalInstance.show();
+        }
+
+        function submitNewGoal() {
+            const title = document.getElementById('modalGoalTitle').value.trim();
+            const why = document.getElementById('modalGoalWhy').value.trim();
+            if (!title) {
+                alert('請填寫新的方向名稱');
+                return;
+            }
+
+            fetch("{% url 'goals:api_set' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ title: title, why: why })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    fireJournalConfetti();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
+                } else {
+                    alert(data.error || '設定失敗');
+                }
+            })
+            .catch(err => {
+                alert('連線失敗，請稍後重試');
+            });
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

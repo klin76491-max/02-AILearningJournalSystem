@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from unittest.mock import patch
 from accounts.services import GoogleAuthService
-from inventory.models import MentalInventoryItem
+from goals.services import GoalService
 
 
 class AccountsTests(TestCase):
@@ -14,11 +14,7 @@ class AccountsTests(TestCase):
             email='testuser@gmail.com',
             first_name='Test Learner'
         )
-        MentalInventoryItem.objects.create(
-            user=self.user,
-            content='測試人生清單',
-            is_focus=True
-        )
+        GoalService.set_goal(self.user, title="測試方向")
 
     def test_login_page_renders_successfully(self):
         response = self.client.get(reverse('accounts:login'))

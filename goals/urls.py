@@ -4,5 +4,6 @@ from . import views
 app_name = 'goals'
 
 urlpatterns = [
-    path('', views.GoalListView.as_view(), name='list'),
+    path('setup/', views.GoalSetupView.as_view(), name='setup'),
+    path('api/set/', views.SetGoalApiView.as_view(), name='api_set'),
 ]

@@ -76,3 +76,19 @@ class LogoutView(View):
         logout(request)
         messages.info(request, "您已安全登出。")
         return redirect('accounts:login')
+
+
+class DevLoginView(View):
+    """
+    僅在 DEBUG=True 時供本機與測試用一鍵登入
+    """
+    def get(self, request):
+        if not settings.DEBUG:
+            return redirect('accounts:login')
+        from django.contrib.auth.models import User
+        user, _ = User.objects.get_or_create(
+            username='explorer',
+            defaults={'email': 'explorer@example.com', 'first_name': '探索者'}
+        )
+        login(request, user)
+        return redirect('journal:today')
