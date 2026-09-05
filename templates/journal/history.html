@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}生活痕跡與時間軸 · A Little Wonder{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12 mb-4">
+    <div class="card card-paper p-4 shadow-sm">
+      <h3 class="fw-bold text-dark mb-1">🌿 留下痕跡 (Track & Trace)</h3>
+      <p class="text-muted mb-0">「如果一直記下去，我會變成什麼樣子。」— 回顧每一天留下的微小足跡。</p>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card card-paper p-4 shadow-sm">
+      <div class="list-group">
+        {% for entry in entries %}
+          <div class="list-group-item p-3 mb-3 rounded border bg-white shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-primary fs-6">{{ entry.entry_date|date:"Y 年 m 月 d 日 (D)" }}</span>
+              <span class="badge bg-warning text-dark">狀態自評：{{ entry.mood_score }}/5</span>
+            </div>
+            
+            {% if entry.am_intent %}
+              <p class="small text-muted mb-1"><strong>🌅 晨間焦點：</strong>{{ entry.am_intent }}</p>
+            {% endif %}
+            
+            {% if entry.pm_reflection %}
+              <p class="small text-muted mb-1"><strong>🌙 晚間省思：</strong>{{ entry.pm_reflection }}</p>
+            {% endif %}
+
+            {% if entry.ai_reflection %}
+              <div class="p-2 mt-2 bg-light rounded border-start border-warning border-3">
+                <small class="text-dark"><strong>💡 AI 洞察：</strong>{{ entry.ai_reflection }}</small>
+              </div>
+            {% endif %}
+          </div>
+        {% empty %}
+          <p class="text-muted text-center py-4">目前尚無歷史記錄。</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

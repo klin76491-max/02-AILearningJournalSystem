@@ -1,0 +1,36 @@
+<div class="list-group-item p-3 mb-2 rounded border {% if item.test_status == 'discarded' %}bg-light opacity-50{% endif %}" id="item-row-{{ item.id }}">
+  <div class="d-flex justify-content-between align-items-start mb-2">
+    <div>
+      <span class="badge bg-{{ label_class }} me-1">{{ label }}</span>
+      <span class="fw-semibold {% if item.test_status == 'discarded' %}text-decoration-line-through text-muted{% endif %}" id="item-text-{{ item.id }}">
+        {{ item.content }}
+      </span>
+    </div>
+    <span class="badge {% if item.test_status == 'kept' %}bg-success{% elif item.test_status == 'discarded' %}bg-danger{% else %}bg-secondary{% endif %}" id="item-status-badge-{{ item.id }}">
+      {{ item.get_test_status_display }}
+    </span>
+  </div>
+
+  <div class="d-flex gap-2 mt-2 flex-wrap">
+    <button type="button" class="btn btn-sm btn-outline-danger" 
+            onclick="siftItem({{ item.id }}, 'discarded')"
+            data-bs-toggle="tooltip" data-bs-placement="top" 
+            title="【斷捨離】若既不必要也沒有深刻意義，果斷劃掉它，從腦中徹底釋放。">
+      <i class="bi bi-x-circle me-1"></i>劃掉丟棄 (Discard)
+    </button>
+
+    <button type="button" class="btn btn-sm btn-outline-success" 
+            onclick="siftItem({{ item.id }}, 'kept', 'obligation')"
+            data-bs-toggle="tooltip" data-bs-placement="top" 
+            title="【責任】雖然未必充滿熱情，但屬於必須兌現的責任，後續排入日常待辦。">
+      <i class="bi bi-shield-check me-1"></i>保留為「責任」
+    </button>
+
+    <button type="button" class="btn btn-sm btn-outline-primary" 
+            onclick="siftItem({{ item.id }}, 'kept', 'goal')"
+            data-bs-toggle="tooltip" data-bs-placement="top" 
+            title="【目標】內心真正渴望追求的願景，可在下一步設為「核心焦點 Sprints」。">
+      <i class="bi bi-star-fill text-warning me-1"></i>保留為「目標」
+    </button>
+  </div>
+</div>

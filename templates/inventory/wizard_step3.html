@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}步驟 3: 聚焦核心目標 · A Little Wonder{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    
+    <!-- 進度指示 -->
+    <div class="card card-paper p-4 mb-4 shadow-sm border-start border-success border-5">
+      <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+        <div>
+          <span class="badge bg-success mb-1">自我探索第三站</span>
+          <h3 class="fw-bold text-dark mb-0">🎯 步驟 3：挑選你最在意的焦點項目 (Focus Sprints)</h3>
+        </div>
+        <span class="badge bg-success px-3 py-2 fs-6">進度：步驟 3 / 3 (聚焦核心)</span>
+      </div>
+
+      <p class="text-muted mb-2">
+        <strong>為什麼不能把所有保留的目標同時做？</strong><br>
+        精力如同手電筒的光束，照得越寬，光芒越微弱；只有聚焦在一點，才能穿透黑暗。<br>
+        請從下方已保留的清單中，挑選出<strong>當前最在意、最想看見突破的 1~2 個焦點目標</strong>。
+      </p>
+
+      <div class="p-3 bg-white rounded border border-success border-opacity-25 small text-dark mt-2">
+        <i class="bi bi-unlock-fill text-success me-1"></i>
+        <strong>即將解鎖每日工作區：</strong>
+        <span class="text-muted">設定完焦點後，你將正式解鎖<strong>「今日子彈日誌 (Daily Log)」</strong>！這些焦點目標將常駐在你的每日工作區頂部，隨時提醒你勿忘初衷。</span>
+      </div>
+    </div>
+
+    <!-- 項目選擇 -->
+    <div class="card card-paper p-4 shadow-sm mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0">
+          <i class="bi bi-star-fill text-warning me-2"></i>已保留的人生清單項目
+        </h5>
+        <small class="text-muted">點擊按鈕切換「核心焦點」狀態</small>
+      </div>
+      
+      <div class="list-group mb-4">
+        {% for item in summary.kept_items %}
+          <div class="list-group-item p-3 mb-2 rounded border d-flex justify-content-between align-items-center {% if item.is_focus %}border-warning bg-warning bg-opacity-10{% endif %}" id="focus-row-{{ item.id }}">
+            <div>
+              <span class="badge {% if item.category == 'goal' %}bg-primary{% else %}bg-secondary{% endif %} me-2"
+                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="{% if item.category == 'goal' %}主動追求的目標願景{% else %}必須承擔的日常責任{% endif %}">
+                {{ item.get_category_display }}
+              </span>
+              <span class="fw-bold">{{ item.content }}</span>
+            </div>
+            <div>
+              <button type="button" class="btn btn-sm {% if item.is_focus %}btn-warning fw-bold{% else %}btn-outline-warning text-dark{% endif %}" 
+                      onclick="toggleFocus({{ item.id }})"
+                      data-bs-toggle="tooltip" data-bs-placement="left" 
+                      title="點擊設為當前最重要的 1~2 個核心衝刺項目">
+                <i class="bi bi-star{% if item.is_focus %}-fill{% endif %} me-1"></i>
+                <span id="focus-btn-text-{{ item.id }}">{% if item.is_focus %}★ 已設為核心焦點{% else %}設為核心焦點{% endif %}</span>
+              </button>
+            </div>
+          </div>
+        {% empty %}
+          <div class="alert alert-info">目前沒有保留的項目，請先回步驟 2 進行篩選保留。</div>
+        {% endfor %}
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow">
+            🚀 完成盤點，開啟我的第一篇子彈日誌！
+          </button>
+          <p class="small text-muted mt-2">完成後可隨時從頂部導航「🌿 人生清單」返回調整焦點。</p>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/inventory.js' %}"></script>
+{% endblock %}

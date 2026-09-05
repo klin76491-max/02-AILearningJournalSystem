@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ report.title }} · A Little Wonder{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    
+    <div class="mb-3">
+      <a href="{% url 'reports:list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>返回週報清單
+      </a>
+    </div>
+
+    <!-- 標題卡片 -->
+    <div class="card card-paper p-4 mb-4 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge bg-primary px-3 py-2 fs-6">{{ report.get_report_type_display }}</span>
+        <small class="text-muted">{{ report.created_at|date:"Y-m-d H:i" }}</small>
+      </div>
+      <h3 class="fw-bold text-dark mb-0">{{ report.title }}</h3>
+    </div>
+
+    <!-- 數據指標卡片 -->
+    {% if report.statistics %}
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="card card-paper p-3 text-center shadow-sm">
+          <small class="text-muted">累計子彈數</small>
+          <h3 class="fw-bold text-primary mb-0">{{ report.statistics.total_bullets|default:0 }}</h3>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card card-paper p-3 text-center shadow-sm">
+          <small class="text-muted">任務完成率</small>
+          <h3 class="fw-bold text-success mb-0">{{ report.statistics.completion_rate|default:0 }}%</h3>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card card-paper p-3 text-center shadow-sm">
+          <small class="text-muted">記錄天數</small>
+          <h3 class="fw-bold text-warning mb-0">{{ report.statistics.days_recorded|default:0 }} 天</h3>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card card-paper p-3 text-center shadow-sm">
+          <small class="text-muted">平均心情自評</small>
+          <h3 class="fw-bold text-dark mb-0">{{ report.statistics.avg_mood|default:3.0 }} / 5</h3>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- 報告三大核心區塊 -->
+    <div class="card card-paper p-4 shadow-sm mb-4">
+      <div class="mb-4">
+        <h5 class="fw-bold text-success mb-2">
+          <i class="bi bi-tree-fill me-2"></i>🌱 核心收穫與累積 (Core Learnings)
+        </h5>
+        <div class="p-3 bg-white rounded border">
+          <p class="mb-0 text-dark" style="white-space: pre-line;">{{ report.core_learnings }}</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h5 class="fw-bold text-danger mb-2">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>🔍 重複出現的盲點與混亂 (Recurring Obstacles)
+        </h5>
+        <div class="p-3 bg-white rounded border">
+          <p class="mb-0 text-dark" style="white-space: pre-line;">{{ report.recurring_obstacles }}</p>
+        </div>
+      </div>
+
+      <div>
+        <h5 class="fw-bold text-primary mb-2">
+          <i class="bi bi-compass-fill me-2"></i>🧭 AI 下階段微行動建議 (Growth Advice)
+        </h5>
+        <div class="p-3 bg-white rounded border">
+          <p class="mb-0 text-dark" style="white-space: pre-line;">{{ report.growth_advice }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

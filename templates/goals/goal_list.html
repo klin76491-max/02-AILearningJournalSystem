@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}核心目標與專案 · A Little Wonder{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  
+  <!-- 頂部標題與說明卡片 -->
+  <div class="col-12">
+    <div class="card card-paper p-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+        <div>
+          <span class="badge-clean mb-1">目標專案化</span>
+          <h4 class="fw-bold text-dark mb-0">🎯 核心目標與專案集合 (Focus Projects)</h4>
+        </div>
+        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#addGoalModal">
+          <i class="bi bi-plus"></i>建立新目標
+        </button>
+      </div>
+
+      <p class="text-secondary small mb-2" style="line-height: 1.6;">
+        《子彈思考整理術》54321 原則：<strong>5 年願景 ➔ 4 個月中期衝刺 ➔ 3 週短期專案 ➔ 2 天具體行動 ➔ 1 小時微小起步</strong>。
+      </p>
+
+      <div class="p-2 bg-white rounded border small text-secondary">
+        <i class="bi bi-info-circle me-1 opacity-75"></i>
+        此處設定的進行中目標，會常駐在<strong>今日子彈日誌</strong>右側，隨時提醒每日速記與行動的方向。
+      </div>
+    </div>
+  </div>
+
+  <!-- 焦點目標列表 -->
+  <div class="col-lg-8">
+    <div class="card card-paper p-4">
+      <div class="fw-bold text-dark small mb-3">
+        <i class="bi bi-compass me-1 opacity-75"></i>進行中的目標衝刺 (Active Sprints)
+      </div>
+      
+      <div class="row g-3">
+        {% for goal in goals %}
+          <div class="col-12">
+            <div class="p-3 bg-white rounded border">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <span class="badge-clean me-1">{{ goal.get_timeframe_display }}</span>
+                  <span class="badge-success-clean">{{ goal.get_status_display }}</span>
+                </div>
+                <small class="text-muted font-monospace" style="font-size: 0.75rem;">{{ goal.created_at|date:"Y-m-d" }}</small>
+              </div>
+              <h6 class="fw-bold text-dark mb-1">{{ goal.title }}</h6>
+              {% if goal.why_statement %}
+                <p class="small text-secondary mb-0">
+                  <span class="text-muted">為什麼重要 (Why)：</span>{{ goal.why_statement }}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center py-4 text-secondary">
+            <p class="small text-muted mb-2">目前尚未建立目標專案。建議從人生清單中的焦點項目轉化為具體目標！</p>
+            <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#addGoalModal">
+              建立第一個目標
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 右側人生清單焦點提醒 -->
+  <div class="col-lg-4">
+    <div class="card card-paper p-4">
+      <div class="fw-bold text-dark small mb-3">
+        <i class="bi bi-tree me-1 opacity-75"></i>人生清單中的焦點項目
+      </div>
+      <div class="list-group list-group-flush mb-3">
+        {% for item in focus_inventory %}
+          <div class="list-group-item px-0 bg-transparent py-2 border-bottom border-light">
+            <span class="badge-intent me-1">焦點</span>
+            <span class="small text-dark">{{ item.content }}</span>
+          </div>
+        {% empty %}
+          <p class="small text-muted mb-0">無焦點項目，可至「人生清單」挑選。</p>
+        {% endfor %}
+      </div>
+      <a href="{% url 'inventory:list' %}" class="btn btn-outline-secondary btn-sm w-100">前往人生清單調整</a>
+    </div>
+  </div>
+</div>
+
+<!-- 新增目標 Modal -->
+<div class="modal fade" id="addGoalModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content card-paper border">
+      <form method="post">
+        {% csrf_token %}
+        <div class="modal-header border-bottom py-2 px-3">
+          <h6 class="modal-title fw-bold mb-0">建立 54321 核心目標專案</h6>
+          <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">時間維度 (54321)</label>
+            {{ form.timeframe }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">目標標題</label>
+            {{ form.title }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">為什麼這件事對你重要？(Why Statement)</label>
+            {{ form.why_statement }}
+          </div>
+        </div>
+        <div class="modal-footer border-top py-2 px-3">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary btn-sm">建立目標</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

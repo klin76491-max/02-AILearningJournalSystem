@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}未來誌 (Future Log) · A Little Wonder{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  
+  <!-- 頂部標題與說明卡片 -->
+  <div class="col-12">
+    <div class="card card-paper p-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+        <div>
+          <span class="badge-clean mb-1">長週期遠期集合</span>
+          <h4 class="fw-bold text-dark mb-0">🔭 未來誌 (Future Log)</h4>
+        </div>
+        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#addFutureItemModal">
+          <i class="bi bi-plus"></i>排入未來事項
+        </button>
+      </div>
+
+      <p class="text-secondary small mb-2" style="line-height: 1.6;">
+        未來誌是用來安放<strong>「未來幾個月後才會發生、但現在不用急著做」</strong>的事項緩衝池，讓大腦在當下保持專注。
+      </p>
+
+      <div class="p-2 bg-white rounded border small text-secondary">
+        <i class="bi bi-arrow-left-right me-1 opacity-75"></i>
+        在每日日誌中，遇到遠期事項可選擇「< 排程至未來誌」；在每個月底回顧時，再將下個月的事項遷移至「月誌」中。
+      </div>
+    </div>
+  </div>
+
+  <!-- 未來誌列表 -->
+  <div class="col-12">
+    <div class="card card-paper p-4">
+      <div class="fw-bold text-dark small mb-3">
+        <i class="bi bi-calendar-range me-1 opacity-75"></i>未來跨月預定事項
+      </div>
+      <div class="row g-3">
+        {% for item in future_items %}
+          <div class="col-md-6 col-lg-4">
+            <div class="p-3 bg-white rounded border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge-clean font-monospace">{{ item.target_month|date:"Y 年 m 月" }}</span>
+                {% if item.is_migrated %}<span class="badge-success-clean">已遷移至月誌</span>{% endif %}
+              </div>
+              <p class="small text-dark mb-0 fw-semibold">{{ item.content }}</p>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center py-4 text-secondary">
+            <p class="small text-muted mb-0">未來誌目前為空。若有幾個月後的遠期活動、考試或計畫，點擊上方按鈕排入！</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新增未來誌 Modal -->
+<div class="modal fade" id="addFutureItemModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content card-paper border">
+      <form method="post">
+        {% csrf_token %}
+        <div class="modal-header border-bottom py-2 px-3">
+          <h6 class="modal-title fw-bold mb-0">排入未來誌項目</h6>
+          <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">目標月份</label>
+            <input type="month" name="target_month" class="form-control form-control-sm" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">事項內容</label>
+            <input type="text" name="content" class="form-control form-control-sm" placeholder="例如：參加年度技術研討會、開始第二階段探索..." required>
+          </div>
+        </div>
+        <div class="modal-footer border-top py-2 px-3">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary btn-sm">確認排入</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

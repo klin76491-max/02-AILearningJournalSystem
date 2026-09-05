@@ -1,0 +1,181 @@
+/**
+ * A Little Wonder · 正宗子彈筆記視覺樣式 (Clean Bullet Journal CSS)
+ * 遵循極簡手帳與反 AI 設計規範
+ */
+
+.bullet-container {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.bullet-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--note-border-subtle);
+  transition: background-color 100ms ease;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+}
+
+.bullet-row:hover {
+  background-color: var(--note-surface-subtle);
+}
+
+.bullet-row:last-child {
+  border-bottom: none;
+}
+
+/* 子彈符號按鈕 (Minimal Monospace Bullet Trigger) */
+.bullet-symbol-btn {
+  background: #ffffff;
+  border: 1px solid var(--note-border);
+  border-radius: var(--radius-sm);
+  width: 26px;
+  height: 26px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  color: var(--note-text-primary);
+  transition: all 120ms ease;
+  user-select: none;
+  line-height: 1;
+}
+
+.bullet-symbol-btn:hover {
+  border-color: var(--note-text-primary);
+  background-color: var(--note-surface-subtle);
+}
+
+.bullet-symbol-btn.completed {
+  background-color: var(--note-success-bg);
+  border-color: #86efac;
+  color: var(--note-success);
+}
+
+/* 子彈內容區域 */
+.bullet-content-wrap {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+/* 極簡型態徽章 (Subtle Neutral Type Label) */
+.bullet-type-pill {
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--note-surface-subtle);
+  color: var(--note-text-secondary);
+  border: 1px solid var(--note-border);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.bullet-text {
+  font-size: 0.925rem;
+  color: var(--note-text-primary);
+  word-break: break-word;
+  line-height: 1.5;
+  transition: color 100ms ease;
+}
+
+.bullet-text.completed {
+  text-decoration: line-through;
+  color: var(--note-text-muted);
+}
+
+/* 操作按鈕 (Quiet Action Triggers) */
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--note-text-muted);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 100ms ease;
+}
+
+.btn-icon:hover {
+  color: var(--note-text-primary);
+  background-color: var(--note-surface-subtle);
+}
+
+/* 符號快捷工具列 (Symbol Quick Toolbar) */
+.symbol-toolbar {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: var(--note-surface-subtle);
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--note-border);
+}
+
+.symbol-quick-btn {
+  background-color: #ffffff;
+  border: 1px solid var(--note-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  color: var(--note-text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 100ms ease;
+  line-height: 1.4;
+}
+
+.symbol-quick-btn:hover {
+  background-color: #ffffff;
+  border-color: var(--note-text-primary);
+  transform: translateY(-1px);
+}
+
+.symbol-quick-btn code {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* 骨架屏載入 (Skeleton Loading) */
+.skeleton {
+  height: 38px;
+  background: linear-gradient(90deg, #f5f3ef 25%, #e7e3dc 50%, #f5f3ef 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.2s infinite ease-in-out;
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+}
+
+@keyframes skeletonLoading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 晚間 AI 反思卡片 (Quiet AI Reflection Box) */
+#ai-reflection-box {
+  line-height: 1.6;
+}
+
+#ai-reflection-box p {
+  margin-bottom: 0.5rem;
+}
+
+#ai-reflection-box p:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}A Little Wonder · 子彈筆記與人生方向系統{% endblock %}</title>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- 簡潔手帳風格核心樣式 -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bullet.css' %}">
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- 全域極簡導航列 -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container-fluid max-w-1200">
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'journal:today' %}">
+        <span class="me-2 fs-5">🌿</span>
+        <span class="fw-bold">A Little Wonder</span>
+      </a>
+      
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarMain">
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.view_name == 'journal:today' %}active{% endif %}" 
+               href="{% url 'journal:today' %}">
+              <i class="bi bi-calendar-check me-1 opacity-75"></i>今日日誌
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'inventory' in request.path %}active{% endif %}" 
+               href="{% url 'inventory:list' %}">
+              <i class="bi bi-tree me-1 opacity-75"></i>人生清單
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'goals' in request.path %}active{% endif %}" 
+               href="{% url 'goals:list' %}">
+              <i class="bi bi-bullseye me-1 opacity-75"></i>核心目標
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'monthly' in request.path %}active{% endif %}" 
+               href="{% url 'journal:monthly' %}">
+              <i class="bi bi-calendar3 me-1 opacity-75"></i>月誌
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'future-log' in request.path %}active{% endif %}" 
+               href="{% url 'journal:future_log' %}">
+              <i class="bi bi-compass me-1 opacity-75"></i>未來誌
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'reports' in request.path %}active{% endif %}" 
+               href="{% url 'reports:list' %}">
+              <i class="bi bi-graph-up me-1 opacity-75"></i>成長週報
+            </a>
+          </li>
+        </ul>
+        
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-secondary small d-none d-md-inline me-1">
+            <i class="bi bi-person me-1"></i>{{ user.first_name|default:user.username }}
+          </span>
+          <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary btn-sm">
+            登出
+          </a>
+        </div>
+        {% else %}
+        <div class="ms-auto">
+          <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm px-3">
+            Google 登入
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- 全域訊息提示 -->
+  <div class="container my-3 max-w-1200">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border rounded-md small py-2 px-3 mb-2" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" style="padding: 0.75rem;"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- 主要內容區 -->
+  <main class="container my-3 mb-5 max-w-1200 flex-grow-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- 極簡頁尾 -->
+  <footer class="footer-custom text-center">
+    <div class="container max-w-1200">
+      <div class="small text-secondary">A Little Wonder · The Bullet Journal Method</div>
+      <div class="small text-muted mt-1" style="font-size: 0.78rem;">「追蹤過去、釐清現在、設計未來」</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

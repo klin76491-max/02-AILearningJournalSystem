@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}步驟 2: 篩選測試 (The Test) · A Little Wonder{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    
+    <!-- 進度與核心哲學指示 -->
+    <div class="card card-paper p-4 mb-4 shadow-sm border-start border-warning border-5">
+      <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+        <div>
+          <span class="badge bg-warning text-dark mb-1">自我探索第二站</span>
+          <h3 class="fw-bold text-dark mb-0">⚖️ 步驟 2：篩選測試 (The Test) 與減法斷捨離</h3>
+        </div>
+        <span class="badge bg-warning text-dark px-3 py-2 fs-6">進度：步驟 2 / 3 (斷捨離)</span>
+      </div>
+
+      <p class="text-muted mb-2">
+        <strong>什麼是「篩選測試」？</strong><br>
+        列出清單不是為了把所有事情做完，而是為了<strong>拿掉不該做的事</strong>。請看著每一件事，誠實回答兩個問題：
+      </p>
+
+      <div class="row g-2 mb-2">
+        <div class="col-md-6">
+          <div class="p-2 bg-white rounded border border-warning border-opacity-50 small">
+            <strong>❓ 問題 1：這件事非做不可嗎？（攸關生計、基本生存或無法逃避的責任）</strong>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-2 bg-white rounded border border-warning border-opacity-50 small">
+            <strong>❓ 問題 2：這件事對我、或我深愛的人來說具有深刻意義嗎？</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-light border-0 mb-0 py-2 small text-muted">
+        <i class="bi bi-lightbulb-fill text-warning me-1"></i>
+        如果兩者的答案都是「否」，請毫不猶豫點擊 <span class="badge bg-outline-danger text-danger border border-danger">劃掉丟棄 (Discard)</span>。劃掉它，你就奪回了一份精力！
+      </div>
+    </div>
+
+    <!-- 項目清單與篩選操作 -->
+    <div class="row g-4">
+      
+      <!-- 待處理項目 -->
+      <div class="col-lg-8">
+        <div class="card card-paper p-4 shadow-sm mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">
+              <i class="bi bi-list-check me-2 text-primary"></i>待篩選的盤點項目 (共 {{ summary.total_count }} 項)
+            </h5>
+            <small class="text-muted">請逐項點擊下方按鈕進行分類</small>
+          </div>
+          
+          <div class="list-group" id="inventory-list">
+            {% for item in summary.doing_items %}
+              {% include 'inventory/partials/wizard_item_card.html' with item=item label="正在做" label_class="primary" %}
+            {% endfor %}
+            {% for item in summary.should_items %}
+              {% include 'inventory/partials/wizard_item_card.html' with item=item label="應該做" label_class="warning text-dark" %}
+            {% endfor %}
+            {% for item in summary.want_items %}
+              {% include 'inventory/partials/wizard_item_card.html' with item=item label="想做" label_class="success" %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- 右側統計與說明 -->
+      <div class="col-lg-4">
+        <div class="card card-paper p-4 shadow-sm mb-4 sticky-top" style="top: 80px;">
+          <h6 class="fw-bold text-dark mb-3">
+            <i class="bi bi-pie-chart-fill text-primary me-1"></i>即時篩選統計
+          </h6>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>✅ 已保留為責任/目標：</span>
+            <strong class="text-success" id="count-kept">{{ summary.kept_items.count }} 項</strong>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span>❌ 果斷劃掉放手：</span>
+            <strong class="text-danger" id="count-discarded">{{ summary.discarded_items.count }} 項</strong>
+          </div>
+          
+          <hr>
+          
+          <div class="small text-muted mb-3">
+            <div class="fw-bold text-dark mb-1">對應關係提示：</div>
+            <p class="mb-1"><strong>• 責任 (Obligation)：</strong> 必須執行的責任，後續排入月誌與每日待辦。</p>
+            <p class="mb-0"><strong>• 目標 (Goal)：</strong> 主動追求的願望，下一步將挑選為「核心焦點 Sprints」。</p>
+          </div>
+
+          <a href="{% url 'inventory:wizard_step3' %}" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+            下一步：聚焦核心目標 ➔
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/inventory.js' %}"></script>
+{% endblock %}

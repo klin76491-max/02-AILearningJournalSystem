@@ -1,0 +1,260 @@
+/**
+ * A Little Wonder · 簡潔手帳風格樣式系統 (Editorial Note Design System)
+ * 遵循反 AI 設計準則 (Anti-AI Design) 與 現代編輯/極簡手帳美學
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* 核心畫布與紙感調色盤 */
+  --note-bg: #fbfaf8;              /* 溫潤紙質底色 */
+  --note-surface: #ffffff;         /* 簡潔卡片底色 */
+  --note-surface-subtle: #f6f4ef;  /* 次要區域微底色 */
+  --note-surface-hover: #f0ede6;   /* 互動懸停底色 */
+  
+  /* 墨水與文字層級 */
+  --note-text-primary: #1c1917;    /* 墨黑內文 Stone-900 */
+  --note-text-secondary: #57534e;  /* 次要敘述 Stone-600 */
+  --note-text-muted: #8c827a;      /* 輔助標籤 Stone-400 */
+  
+  /* 結構邊框 (1px Crisp Borders) */
+  --note-border: #e7e3dc;          /* 結構細線 */
+  --note-border-focus: #1c1917;    /* 焦點輸入外框 */
+  --note-border-subtle: #f0ece6;   /* 分隔微線 */
+  
+  /* 意圖焦點與功能色彩 */
+  --note-primary: #1c1917;         /* 墨黑主按鈕 */
+  --note-intent: #b45309;          /* 晨間意圖暖琥珀 */
+  --note-intent-bg: #fffbeb;       /* 意圖卡片微光底色 */
+  --note-success: #15803d;         /* 完成墨綠 */
+  --note-success-bg: #f0fdf4;      /* 完成微底色 */
+  --note-danger: #b91c1c;          /* 警示紅 */
+  
+  /* 幾何圓角 (收斂至結構倒角，拒絕過大膠囊) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  
+  /* 微陰影 (極淡紙張邊界感) */
+  --note-shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --note-shadow-md: 0 4px 12px rgba(28, 25, 23, 0.05);
+}
+
+/* 全域重置與排版 */
+body {
+  background-color: var(--note-bg);
+  color: var(--note-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.max-w-1200 {
+  max-width: 1160px;
+}
+
+/* 極簡頂部導航列 (Minimalist Editorial Nav) */
+.navbar-custom {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid var(--note-border);
+  box-shadow: var(--note-shadow-sm);
+  padding: 0.75rem 0;
+}
+
+.navbar-custom .navbar-brand {
+  color: var(--note-text-primary) !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.navbar-custom .nav-link {
+  color: var(--note-text-secondary) !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: var(--radius-md);
+  transition: all 120ms ease;
+  margin: 0 2px;
+}
+
+.navbar-custom .nav-link:hover {
+  color: var(--note-text-primary) !important;
+  background-color: var(--note-surface-subtle);
+}
+
+.navbar-custom .nav-link.active {
+  color: var(--note-text-primary) !important;
+  background-color: var(--note-surface-subtle);
+  font-weight: 600;
+}
+
+/* 簡潔卡片 (Clean Note Card) */
+.card-paper {
+  background-color: var(--note-surface);
+  border: 1px solid var(--note-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--note-shadow-sm);
+  transition: border-color 120ms ease;
+}
+
+.card-paper:hover {
+  border-color: #d6d0c7;
+}
+
+/* 晨間意圖專屬簡潔卡片 */
+.card-intent {
+  background-color: var(--note-intent-bg);
+  border: 1px solid #fed7aa;
+  border-radius: var(--radius-lg);
+}
+
+/* 晚間省思專屬簡潔卡片 */
+.card-reflection {
+  background-color: #fdfbf7;
+  border: 1px solid #f0e6d6;
+  border-radius: var(--radius-lg);
+}
+
+/* 按鈕系統 (Restrained & Functional Buttons) */
+.btn {
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  padding: 0.45rem 0.9rem;
+  transition: all 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.btn-primary {
+  background-color: var(--note-primary);
+  border-color: var(--note-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #292524;
+  border-color: #292524;
+  color: #ffffff;
+}
+
+.btn-outline-secondary {
+  background-color: #ffffff;
+  border-color: var(--note-border);
+  color: var(--note-text-secondary);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--note-surface-subtle);
+  border-color: #d6d0c7;
+  color: var(--note-text-primary);
+}
+
+.btn-warning {
+  background-color: var(--note-intent);
+  border-color: var(--note-intent);
+  color: #ffffff;
+}
+
+.btn-warning:hover {
+  background-color: #92400e;
+  border-color: #92400e;
+  color: #ffffff;
+}
+
+.btn-google {
+  background-color: #ffffff;
+  color: var(--note-text-primary);
+  border: 1px solid var(--note-border);
+  font-weight: 500;
+  box-shadow: var(--note-shadow-sm);
+}
+
+.btn-google:hover {
+  background-color: var(--note-surface-subtle);
+  border-color: #d6d0c7;
+}
+
+/* 輸入框 (Clean Minimal Input) */
+.form-control, .form-select {
+  background-color: #ffffff;
+  border: 1px solid var(--note-border);
+  border-radius: var(--radius-md);
+  color: var(--note-text-primary);
+  font-size: 0.9rem;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--note-border-focus);
+  box-shadow: 0 0 0 2px rgba(28, 25, 23, 0.08);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--note-text-muted);
+  font-size: 0.85rem;
+}
+
+/* 狀態徽章 (Subtle Badge) */
+.badge-clean {
+  background-color: var(--note-surface-subtle);
+  color: var(--note-text-secondary);
+  border: 1px solid var(--note-border);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+}
+
+.badge-intent {
+  background-color: var(--note-intent-bg);
+  color: var(--note-intent);
+  border: 1px solid #fed7aa;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+}
+
+.badge-success-clean {
+  background-color: var(--note-success-bg);
+  color: var(--note-success);
+  border: 1px solid #bbf7d0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+}
+
+/* 頁尾 (Minimal Footer) */
+.footer-custom {
+  background-color: #ffffff;
+  border-top: 1px solid var(--note-border);
+  color: var(--note-text-muted);
+  padding: 1.5rem 0;
+  margin-top: auto;
+  font-size: 0.85rem;
+}
+
+/* 輔助標題 */
+.section-title-clean {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--note-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.section-subtitle-clean {
+  font-size: 0.8rem;
+  color: var(--note-text-muted);
+  margin-bottom: 0;
+}
