@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from goals.services import GoalService
-from .models import JournalEntry, SoulReflection
-from .services import EchoService, JournalService
+from journal.models import JournalEntry, SoulReflection
+from journal.services import EchoService, JournalService
 
 
 class JournalTests(TestCase):

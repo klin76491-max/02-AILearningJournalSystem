@@ -122,7 +122,7 @@ docker exec -it fwm-app-02 python manage.py createsuperuser
 
 #### 5.6 執行容器內自動化測試
 ```bash
-docker exec -it fwm-app-02 python manage.py test accounts inventory goals journal ai_engine reports -v 2
+docker exec -it fwm-app-02 python manage.py test accounts goals journal ai_engine -v 2
 ```
 
 #### 5.7 停止、重啟與移除容器
@@ -143,7 +143,7 @@ docker rm -f fwm-app-02
 ## 執行單元測試
 
 ```powershell
-.\.venv\Scripts\python.exe manage.py test accounts inventory goals journal ai_engine reports -v 2
+.\.venv\Scripts\python.exe manage.py test accounts goals journal ai_engine -v 2
 ```
 
 ---
