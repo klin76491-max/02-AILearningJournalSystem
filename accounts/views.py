@@ -20,10 +20,16 @@ class LoginView(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
+from django.urls import reverse
+
+
 class GoogleLoginView(View):
     def get(self, request):
         try:
-            auth_url = GoogleAuthService.get_auth_url()
+            redirect_uri = getattr(settings, 'GOOGLE_REDIRECT_URI', '')
+            if not redirect_uri:
+                redirect_uri = request.build_absolute_uri(reverse('accounts:google_callback'))
+            auth_url = GoogleAuthService.get_auth_url(redirect_uri=redirect_uri)
             return redirect(auth_url)
         except GoogleAuthError as e:
             messages.error(request, f"Google 登入暫時不可用：{str(e)}")
@@ -44,7 +50,11 @@ class GoogleCallbackView(View):
             return redirect('accounts:login')
 
         try:
-            token_data = GoogleAuthService.exchange_code_for_token(code)
+            redirect_uri = getattr(settings, 'GOOGLE_REDIRECT_URI', '')
+            if not redirect_uri:
+                redirect_uri = request.build_absolute_uri(reverse('accounts:google_callback'))
+
+            token_data = GoogleAuthService.exchange_code_for_token(code, redirect_uri=redirect_uri)
             access_token = token_data.get('access_token')
 
             if not access_token:
@@ -61,6 +71,7 @@ class GoogleCallbackView(View):
         except GoogleAuthError as e:
             messages.error(request, f"Google 登入失敗：{str(e)}")
             return redirect('accounts:login')
+
         except Exception:
             messages.error(request, "登入處理發生未預期錯誤，請稍後再試。")
             return redirect('accounts:login')

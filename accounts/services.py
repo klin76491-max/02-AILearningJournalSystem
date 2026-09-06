@@ -15,9 +15,10 @@ class GoogleAuthError(Exception):
 
 class GoogleAuthService:
     @classmethod
-    def get_auth_url(cls, state: str = '') -> str:
+    def get_auth_url(cls, state: str = None, redirect_uri: str = None) -> str:
         client_id = getattr(settings, 'GOOGLE_OAUTH_CLIENT_ID', '') or os.getenv('GOOGLE_OAUTH_CLIENT_ID', '')
-        redirect_uri = getattr(settings, 'GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8000/accounts/google/callback/')
+        if not redirect_uri:
+            redirect_uri = getattr(settings, 'GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8002/accounts/google/callback/')
         auth_endpoint = getattr(settings, 'GOOGLE_AUTH_URL', 'https://accounts.google.com/o/oauth2/v2/auth')
 
         if not client_id:
@@ -37,10 +38,11 @@ class GoogleAuthService:
         return f"{auth_endpoint}?{urlencode(params)}"
 
     @classmethod
-    def exchange_code_for_token(cls, code: str) -> dict:
+    def exchange_code_for_token(cls, code: str, redirect_uri: str = None) -> dict:
         client_id = getattr(settings, 'GOOGLE_OAUTH_CLIENT_ID', '') or os.getenv('GOOGLE_OAUTH_CLIENT_ID', '')
         client_secret = getattr(settings, 'GOOGLE_OAUTH_CLIENT_SECRET', '') or os.getenv('GOOGLE_OAUTH_CLIENT_SECRET', '')
-        redirect_uri = getattr(settings, 'GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8000/accounts/google/callback/')
+        if not redirect_uri:
+            redirect_uri = getattr(settings, 'GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8002/accounts/google/callback/')
         token_endpoint = getattr(settings, 'GOOGLE_TOKEN_URL', 'https://oauth2.googleapis.com/token')
 
         if not client_id or not client_secret:

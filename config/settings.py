@@ -34,6 +34,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'accounts.middleware.SSOGatewayMiddleware', # SSO 網關身分自動同步
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -92,21 +93,30 @@ TIME_ZONE = 'Asia/Taipei'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
+STATIC_URL = '/journal/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# 獨立 Cookie 命名避免子應用互相覆蓋
+SESSION_COOKIE_NAME = 'journal_sessionid'
+CSRF_COOKIE_NAME = 'journal_csrftoken'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/journal/today/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_URL = '/journal/accounts/login/'
+LOGIN_REDIRECT_URL = '/journal/'
+LOGOUT_REDIRECT_URL = '/journal/accounts/login/'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID', '')
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv('GOOGLE_OAUTH_CLIENT_SECRET', '')
-GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8000/accounts/google/callback/')
+GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8002/accounts/google/callback/')
 GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo'
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+

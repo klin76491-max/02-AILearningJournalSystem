@@ -48,3 +48,23 @@ class AccountsTests(TestCase):
         response = self.client.get(reverse('accounts:logout'))
         self.assertRedirects(response, reverse('accounts:login'))
         self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_sso_gateway_auto_login(self):
+        import urllib.parse
+        sso_email = 'journalsso@example.com'
+        sso_name = urllib.parse.quote('日誌探索者')
+
+        response = self.client.get(
+            reverse('journal:today'),
+            HTTP_X_USER_EMAIL=sso_email,
+            HTTP_X_USER_NAME=sso_name,
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.filter(email=sso_email).first()
+        self.assertIsNotNone(user)
+        self.assertEqual(user.first_name, '日誌探索者')
+        self.assertTrue(response.context['user'].is_authenticated)
+        self.assertEqual(response.context['user'].email, sso_email)
+
+

@@ -8,9 +8,16 @@ from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('i18n/', include('django.conf.urls.i18n')),
-    path('accounts/', include('accounts.urls')),
-    path('goals/', include('goals.urls')),
+    path('journal/goals/', include('goals.urls')),
+    path('journal/accounts/', include('accounts.urls')),
+    path('journal/i18n/', include('django.conf.urls.i18n')),
     path('journal/', include('journal.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('accounts/<path:subpath>', lambda request, subpath: redirect(f'/journal/accounts/{subpath}')),
+    path('accounts/', lambda request: redirect('/journal/accounts/login/')),
+    path('goals/<path:subpath>', lambda request, subpath: redirect(f'/journal/goals/{subpath}')),
+    path('goals/', lambda request: redirect('/journal/goals/setup/')),
     path('', lambda request: redirect('journal:today')),
 ]
+
+
