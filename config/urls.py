@@ -20,4 +20,13 @@ urlpatterns = [
     path('', lambda request: redirect('journal:today')),
 ]
 
+from django.conf import settings
+from django.views.static import serve
+from django.urls import re_path
+
+urlpatterns += [
+    re_path(r'^journal/static/(?P<path>.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}),
+]
+
 

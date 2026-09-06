@@ -13,6 +13,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-ai-learning-journal-system
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 ALLOWED_HOSTS = ['*']
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = ['https://www.alittlewonder.com']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
