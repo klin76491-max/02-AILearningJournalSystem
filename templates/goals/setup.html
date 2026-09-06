@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}翻開第一頁｜設定前進方向{% endblock %}
+{% block title %}{% trans "翻開第一頁｜設定前進方向" %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center py-3 py-md-4">
@@ -12,11 +13,11 @@
             <div class="bookmark-ribbon"></div>
 
             <div class="text-center mb-4 mt-2">
-                <span class="badge-goal mb-2 d-inline-block font-handwrite fs-6">First Page • Anchor Goal</span>
-                <h2 class="fs-4 fw-bold text-dark mt-1 mb-2 font-serif">這段日子，你想走向哪裡？</h2>
+                <span class="badge-goal mb-2 d-inline-block font-handwrite fs-6">{% trans "第一頁 • 定錨前進方向" %}</span>
+                <h2 class="fs-4 fw-bold text-dark mt-1 mb-2 font-serif">{% trans "這段日子，你想走向哪裡？" %}</h2>
                 <p class="text-muted small font-serif">
-                    不用是多麼偉大的誓言。可能只是：十四天完成一個微小工具、每天寫三行程式、或是每天留二十分鐘安靜坐著。<br>
-                    走著走著如果迷路或完成了，你隨時可以在頁首換個新方向。
+                    {% trans "不用是多麼偉大的誓言。可能只是：十四天完成一個微小工具、每天寫三行程式、或是每天留二十分鐘安靜坐著。" %}<br>
+                    {% trans "走著走著如果迷路或完成了，你隨時可以在頁首換個新方向。" %}
                 </p>
             </div>
 
@@ -25,26 +26,26 @@
                 
                 <div class="mb-4">
                     <label for="title" class="form-label fw-bold text-dark font-serif">
-                        🎯 這段時間，我想試著專注的一件事是…… <span class="text-danger">*</span>
+                        {% trans "🎯 這段時間，我想試著專注的一件事是……" %} <span class="text-danger">*</span>
                     </label>
                     <input type="text" name="title" id="title" class="form-control dot-grid-input" 
-                           placeholder="例如：連續十四天，每天給自己留一點時間寫程式" 
+                           placeholder="{% trans '例如：連續十四天，每天給自己留一點時間寫程式' %}" 
                            value="{% if current_goal %}{{ current_goal.title }}{% elif title %}{{ title }}{% endif %}" required>
-                    <div class="form-text small text-muted font-serif">簡短一句話即可，這將是這段日記的篇章標題。</div>
+                    <div class="form-text small text-muted font-serif">{% trans "簡短一句話即可，這將是這段日記的篇章標題。" %}</div>
                 </div>
 
                 <div class="mb-4">
                     <label for="why" class="form-label fw-medium text-dark font-serif">
-                        💡 為什麼想做這件事？ (初心與期待，選填)
+                        {% trans "💡 為什麼想做這件事？ (初心與期待，選填)" %}
                     </label>
                     <textarea name="why" id="why" rows="3" class="form-control dot-grid-input" 
-                              placeholder="例如：想知道想和做之間的距離，到底能不能被拉近一些。">{% if current_goal %}{{ current_goal.why }}{% elif why %}{{ why }}{% endif %}</textarea>
-                    <div class="form-text small text-muted font-serif">寫給未來某一天的自己看。</div>
+                              placeholder="{% trans '例如：想知道想和做之間的距離，到底能不能被拉近一些。' %}">{% if current_goal %}{{ current_goal.why }}{% elif why %}{{ why }}{% endif %}</textarea>
+                    <div class="form-text small text-muted font-serif">{% trans "寫給未來某一天的自己看。" %}</div>
                 </div>
 
                 <div class="text-center mt-4 pt-2">
                     <button type="submit" class="btn btn-ink btn-lg px-5">
-                        <i class="bi bi-pen me-2"></i> 開始翻開日記，留下痕跡 ➔
+                        <i class="bi bi-pen me-2"></i> {% trans "開始翻開日記，留下痕跡 ➔" %}
                     </button>
                 </div>
             </form>

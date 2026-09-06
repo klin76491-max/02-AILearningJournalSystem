@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}留下痕跡｜時間河流{% endblock %}
+{% block title %}{% trans "留下痕跡｜時間河流" %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -10,38 +11,38 @@
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
                 <div>
                     <h2 class="fs-4 fw-bold text-dark mb-1 font-serif">
-                        <i class="bi bi-water me-2 text-primary"></i> 時間河流
-                        <span class="font-handwrite text-muted fs-6 ms-2">River of Traces</span>
+                        <i class="bi bi-water me-2 text-primary"></i> {% trans "時間河流" %}
+                        <span class="font-handwrite text-muted fs-6 ms-2">{% trans "痕跡長河" %}</span>
                     </h2>
                     <p class="text-muted small mb-0 font-serif">
-                        「翻看過去才發現，有些事情我以為自己做了很多，其實根本沒有；有些事情我以為一直在失敗，卻已經走遠了一點。」
+                        {% trans "「翻看過去才發現，有些事情我以為自己做了很多，其實根本沒有；有些事情我以為一直在失敗，卻已經走遠了一點。」" %}
                     </p>
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     {% if page_obj %}
-                    <button type="button" class="btn btn-sm btn-outline-secondary shadow-sm" onclick="pickRandomMemory()" data-tippy-content="隨機翻開一則過往的記憶痕跡">
-                        🎲 <span>重溫隨機一頁</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary shadow-sm" onclick="pickRandomMemory()" data-tippy-content="{% trans '隨機翻開一則過往的記憶痕跡' %}">
+                        🎲 <span>{% trans "重溫隨機一頁" %}</span>
                     </button>
                     {% endif %}
                     <a href="{% url 'journal:today' %}" class="btn btn-sm btn-ink shadow-sm">
-                        <i class="bi bi-pen me-1"></i> 返回今日書寫
+                        <i class="bi bi-pen me-1"></i> {% trans "返回今日書寫" %}
                     </a>
                 </div>
             </div>
 
             <!-- 目標篩選 Pills -->
             <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
-                <span class="small text-muted me-1 font-serif">章節過濾:</span>
+                <span class="small text-muted me-1 font-serif">{% trans "章節過濾:" %}</span>
                 <a href="{% url 'journal:river' %}" 
                    class="stamp-btn text-decoration-none {% if not current_goal_filter %}active{% endif %}"
                    onclick="if(window.journalSFX) window.journalSFX.playPageTurn();">
-                    全部痕跡
+                    {% trans "全部痕跡" %}
                 </a>
                 {% for g in all_goals %}
                 <a href="{% url 'journal:river' %}?goal={{ g.id }}" 
                    class="stamp-btn text-decoration-none {% if current_goal_filter == g.id %}active{% endif %}"
                    onclick="if(window.journalSFX) window.journalSFX.playPageTurn();">
-                    🔖 {{ g.title|truncatechars:20 }}{% if g.is_active %} <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">當前</span>{% endif %}
+                    🔖 {{ g.title|truncatechars:20 }}{% if g.is_active %} <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">{% trans "當前" %}</span>{% endif %}
                 </a>
                 {% endfor %}
             </div>
@@ -54,10 +55,7 @@
                 <div class="position-relative trace-entry-item" id="entryCard-{{ entry.id }}">
                     <div class="timeline-node"></div>
                     
-                    <div class="handbook-card page-curl p-4 position-relative">
-                        <!-- 和紙膠帶裝飾 (多樣化顏色交替) -->
-                        {% cycle 'washi-yellow' 'washi-mint' 'washi-rose' 'washi-sky' as washi_style %}
-                        <div class="washi-tape {{ washi_style }}"></div>
+                    <div class="handbook-card p-4 position-relative" style="border-left: 3.5px solid var(--misty-lake);">
 
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center border-bottom pb-2 mb-3 gap-2">
                             <div class="d-flex align-items-center flex-wrap gap-2">
@@ -71,15 +69,15 @@
                                 {% endif %}
                                 
                                 <!-- 天氣與心情小印記 -->
-                                {% if entry.weather == 'sunny' %}<span class="badge bg-light text-muted border small" data-tippy-content="天候：晴朗">☀️ 晴</span>{% endif %}
-                                {% if entry.weather == 'rainy' %}<span class="badge bg-light text-muted border small" data-tippy-content="天候：陰雨">🌧️ 雨</span>{% endif %}
-                                {% if entry.weather == 'night' %}<span class="badge bg-light text-muted border small" data-tippy-content="天候：深夜">🌙 夜</span>{% endif %}
-                                {% if entry.mood == 'sparks' %}<span class="badge bg-warning-subtle text-dark border border-warning-subtle small" data-tippy-content="心情：微光">✨ 微光</span>{% endif %}
-                                {% if entry.mood == 'chaos' %}<span class="badge bg-secondary-subtle text-muted border small" data-tippy-content="心情：混亂">🌀 混亂</span>{% endif %}
-                                {% if entry.mood == 'sprout' %}<span class="badge bg-success-subtle text-success border border-success-subtle small" data-tippy-content="心情：萌芽">🌱 萌芽</span>{% endif %}
+                                {% if entry.weather == 'sunny' %}<span class="badge bg-light text-muted border small" data-tippy-content="{% trans '今日天候：晴朗日光' %}">☀️ {% trans "晴" %}</span>{% endif %}
+                                {% if entry.weather == 'rainy' %}<span class="badge bg-light text-muted border small" data-tippy-content="{% trans '今日天候：濛濛細雨' %}">🌧️ {% trans "雨" %}</span>{% endif %}
+                                {% if entry.weather == 'night' %}<span class="badge bg-light text-muted border small" data-tippy-content="{% trans '今日天候：寂靜深夜' %}">🌙 {% trans "夜" %}</span>{% endif %}
+                                {% if entry.mood == 'sparks' %}<span class="badge bg-warning-subtle text-dark border border-warning-subtle small" data-tippy-content="{% trans '心情：捕捉到靈光或小成就' %}">✨ {% trans "微光" %}</span>{% endif %}
+                                {% if entry.mood == 'chaos' %}<span class="badge bg-secondary-subtle text-muted border small" data-tippy-content="{% trans '心情：思緒繁雜混亂' %}">🌀 {% trans "混亂" %}</span>{% endif %}
+                                {% if entry.mood == 'sprout' %}<span class="badge bg-success-subtle text-success border border-success-subtle small" data-tippy-content="{% trans '心情：有微小萌芽與新起點' %}">🌱 {% trans "萌芽" %}</span>{% endif %}
                             </div>
                             <span class="text-muted small font-handwrite fs-6">
-                                sealed at {{ entry.created_at|date:"H:i" }}
+                                {% trans "蓋印於" %} {{ entry.created_at|date:"H:i" }}
                             </span>
                         </div>
 
@@ -87,31 +85,31 @@
                         <div class="mb-3 font-serif">
                             {% if entry.raw_content %}
                                 <div class="small text-secondary mb-2">
-                                    <span class="fw-bold text-dark">【手帳隨筆】</span>
+                                    <span class="fw-bold text-dark">{% trans "【手帳隨筆】" %}</span>
                                     <p class="mb-0 mt-1 fst-italic" style="white-space: pre-wrap; line-height: 1.8;">{{ entry.raw_content }}</p>
                                 </div>
                             {% else %}
                                 {% if entry.did_today %}
                                 <div class="small text-secondary mb-2">
-                                    <span class="fw-bold text-dark">【做了什麼】</span> {{ entry.did_today }}
+                                    <span class="fw-bold text-dark">{% trans "【做了什麼】" %}</span> {{ entry.did_today }}
                                 </div>
                                 {% endif %}
 
                                 {% if entry.learned_today %}
                                 <div class="small text-secondary mb-2">
-                                    <span class="fw-bold text-dark">【學到了什麼】</span> {{ entry.learned_today }}
+                                    <span class="fw-bold text-dark">{% trans "【學到了什麼】" %}</span> {{ entry.learned_today }}
                                 </div>
                                 {% endif %}
 
                                 {% if entry.failed_today %}
                                 <div class="small text-secondary mb-2">
-                                    <span class="fw-bold text-danger">【失敗與卡住】</span> {{ entry.failed_today }}
+                                    <span class="fw-bold text-danger">{% trans "【哪裡失敗了】" %}</span> {{ entry.failed_today }}
                                 </div>
                                 {% endif %}
 
                                 {% if entry.resistance_today %}
                                 <div class="small text-secondary mb-2">
-                                    <span class="fw-bold text-dark">【抗拒與心情】</span> {{ entry.resistance_today }}
+                                    <span class="fw-bold text-dark">{% trans "【抗拒與心情】" %}</span> {{ entry.resistance_today }}
                                 </div>
                                 {% endif %}
                             {% endif %}
@@ -123,20 +121,20 @@
                             {% if entry.reflection.summary %}
                             <div class="mb-2 pe-4">
                                 <span class="badge bg-secondary-subtle text-secondary small mb-1 font-serif">
-                                    <i class="bi bi-book-half me-1"></i> 今日簡記
+                                    <i class="bi bi-book-half me-1"></i> {% trans "今日簡記" %}
                                 </span>
                                 <p class="small fst-italic text-dark mb-0 font-serif" style="line-height: 1.8;">{{ entry.reflection.summary }}</p>
                             </div>
                             {% endif %}
 
                             <div class="my-2 pt-2 border-top border-secondary-subtle">
-                                <span class="text-dark small fw-bold font-serif">🕊️ 靈魂提問：</span>
+                                <span class="text-dark small fw-bold font-serif">🕊️ {% trans "靈魂提問：" %}</span>
                                 <span class="small fw-bold text-dark font-serif">「{{ entry.reflection.soul_question }}」</span>
                             </div>
 
                             {% if entry.reflection.user_answer %}
                             <div class="mt-2 pt-2 border-top border-secondary-subtle">
-                                <span class="text-muted small font-serif">💬 今晚手寫筆記：</span>
+                                <span class="text-muted small font-serif">💬 {% trans "今晚手寫筆記：" %}</span>
                                 <span class="small fst-italic text-secondary font-serif">{{ entry.reflection.user_answer }}</span>
                             </div>
                             {% endif %}
@@ -155,19 +153,19 @@
                         {% if page_obj.has_previous %}
                         <li class="page-item">
                             <a class="page-link text-dark handbook-card" href="?page={{ page_obj.previous_page_number }}{% if current_goal_filter %}&goal={{ current_goal_filter }}{% endif %}" onclick="if(window.journalSFX) window.journalSFX.playPageTurn();">
-                                <i class="bi bi-chevron-left me-1"></i> 上一頁
+                                <i class="bi bi-chevron-left me-1"></i> {% trans "上一頁" %}
                             </a>
                         </li>
                         {% endif %}
                         
                         <li class="page-item disabled">
-                            <span class="page-link text-muted font-serif">第 {{ page_obj.number }} 頁 / 共 {{ page_obj.paginator.num_pages }} 頁</span>
+                            <span class="page-link text-muted font-serif">{% trans "第" %} {{ page_obj.number }} {% trans "頁 / 共" %} {{ page_obj.paginator.num_pages }} {% trans "頁" %}</span>
                         </li>
 
                         {% if page_obj.has_next %}
                         <li class="page-item">
                             <a class="page-link text-dark handbook-card" href="?page={{ page_obj.next_page_number }}{% if current_goal_filter %}&goal={{ current_goal_filter }}{% endif %}" onclick="if(window.journalSFX) window.journalSFX.playPageTurn();">
-                                下一頁 <i class="bi bi-chevron-right ms-1"></i>
+                                {% trans "下一頁" %} <i class="bi bi-chevron-right ms-1"></i>
                             </a>
                         </li>
                         {% endif %}
@@ -181,10 +179,10 @@
             <div class="handbook-card page-curl p-5 text-center text-muted position-relative">
                 <div class="washi-tape washi-sky"></div>
                 <i class="bi bi-journal-x fs-1 mb-3 d-block text-secondary"></i>
-                <p class="mb-2 font-serif fs-5 text-dark">時間河流裡還沒有任何痕跡。</p>
-                <p class="small text-muted mb-4 font-serif">「萬事起頭難，只要記下今天的一兩句，這條河就會開始流動。」</p>
+                <p class="mb-2 font-serif fs-5 text-dark">{% trans "時間河流裡還沒有任何痕跡。" %}</p>
+                <p class="small text-muted mb-4 font-serif">{% trans "「萬事起頭難，只要記下今天的一兩句，這條河就會開始流動。」" %}</p>
                 <a href="{% url 'journal:today' %}" class="btn btn-ink px-4 py-2">
-                    <i class="bi bi-pen me-2"></i> 翻開手帳，留下第一筆痕跡
+                    <i class="bi bi-pen me-2"></i> {% trans "翻開手帳，留下第一筆痕跡" %}
                 </a>
             </div>
         {% endif %}

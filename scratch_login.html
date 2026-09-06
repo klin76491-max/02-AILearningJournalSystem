@@ -1,10 +1,10 @@
-{% load static i18n %}
+
 <!DOCTYPE html>
-<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
+<html lang="zh-hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% trans "留下痕跡｜手帳學習日誌" %}{% endblock %}</title>
+    <title>留下痕跡｜翻開手帳</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -14,7 +14,7 @@
     <!-- Tippy.js light-border theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css"/>
     <!-- 手帳專屬美學樣式 -->
-    <link rel="stylesheet" href="{% static 'css/handbook.css' %}">
+    <link rel="stylesheet" href="/static/css/handbook.css">
     
     <style>
         /* 導航列：深可可手帳書脊質地 (03_Product_Style.md) */
@@ -85,15 +85,15 @@
             font-size: 0.88rem;
         }
     </style>
-    {% block extra_css %}{% endblock %}
+    
 </head>
 <body>
     <!-- 手帳頂部導航 -->
     <nav class="navbar navbar-expand-lg journal-nav sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'journal:today' %}">
-                <i class="bi bi-book me-2 text-warning"></i> {% trans "留下痕跡" %}
-                <span class="ms-2 font-handwrite text-warning small fs-6" style="opacity: 0.9;">{% trans "手帳學習日誌" %}</span>
+            <a class="navbar-brand d-flex align-items-center" href="/journal/">
+                <i class="bi bi-book me-2 text-warning"></i> 留下痕跡
+                <span class="ms-2 font-handwrite text-warning small fs-6" style="opacity: 0.9;">手帳學習日誌</span>
             </a>
             
             <button class="navbar-toggler border-0 text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
@@ -102,56 +102,29 @@
 
             <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
-                    {% if user.is_authenticated %}
-                    <li class="nav-item ms-lg-3">
-                        <a class="nav-link d-flex align-items-center" href="{% url 'journal:river' %}" data-tippy-content="{% trans '漫步翻看時間河流裡的每日痕跡' %}">
-                            <i class="bi bi-water me-1 text-info"></i> {% trans "時間河流" %}
-                        </a>
-                    </li>
-                    {% endif %}
+                    
                 </ul>
 
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <!-- 語言切換選單 (Language Switcher) -->
-                    <form action="{% url 'set_language' %}" method="post" class="lang-switch-form" id="lang-switch-form">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                    <form action="/i18n/setlang/" method="post" class="lang-switch-form" id="lang-switch-form">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="qSATgIJ0vpPod6dn3xLSUGVRmgFE9Mw5v7T8uKN1ivxIHifIcrG5SiKv9Hcisd4H">
+                        <input name="next" type="hidden" value="/accounts/login/">
                         <div class="lang-selector-wrapper">
                             <span class="lang-globe-icon">🌐</span>
-                            {% get_current_language as CURRENT_LANG %}
-                            <select name="language" onchange="this.form.submit()" class="lang-select" id="lang-select" aria-label="{% trans '語言' %}">
-                                <option value="zh-hant" {% if CURRENT_LANG == 'zh-hant' %}selected{% endif %}>繁體中文</option>
-                                <option value="en" {% if CURRENT_LANG == 'en' %}selected{% endif %}>English</option>
+                            
+                            <select name="language" onchange="this.form.submit()" class="lang-select" id="lang-select" aria-label="語言">
+                                <option value="zh-hant" selected>繁體中文</option>
+                                <option value="en" >English</option>
                             </select>
                         </div>
                     </form>
 
-                    {% if user.is_authenticated %}
-                    <!-- 觸感音效切換 -->
-                    <button type="button" class="btn btn-sm btn-outline-light py-1 px-2" id="soundToggleBtn" onclick="toggleHandbookSound()" data-tippy-content="{% trans '手帳音效：翻頁、書寫、蓋印' %}">
-                        <span id="soundIcon">🔊</span> <span class="d-none d-sm-inline" id="soundText">{% trans "音效" %}</span>
-                    </button>
-
-                    {% if active_goal %}
-                    <span class="badge-goal d-none d-md-inline-block" data-tippy-content="{% trans '點擊鉛筆隨時更換前進方向' %}">
-                        🔖 {% trans "方向：" %}{{ active_goal.title|truncatechars:22 }}
-                        <a href="javascript:void(0)" onclick="openGoalModal()" class="text-decoration-none ms-1 text-muted" title="{% trans '更換前進方向' %}">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                    </span>
-                    {% endif %}
-
-                    <span class="text-white-50 small ms-1">
-                        {{ user.first_name|default:user.username }}
-                    </span>
-                    <a href="{% url 'accounts:logout' %}" class="btn btn-sm btn-outline-light py-1 px-2" style="font-size: 0.8rem;">
-                        {% trans "闔上手帳" %}
+                    
+                    <a href="/accounts/login/" class="btn btn-sm btn-outline-light py-1 px-2" style="font-size: 0.8rem;">
+                        登入
                     </a>
-                    {% else %}
-                    <a href="{% url 'accounts:login' %}" class="btn btn-sm btn-outline-light py-1 px-2" style="font-size: 0.8rem;">
-                        {% trans "登入" %}
-                    </a>
-                    {% endif %}
+                    
                 </div>
             </div>
         </div>
@@ -159,19 +132,66 @@
 
     <!-- 系統訊息 -->
     <div class="container mt-3">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-secondary border-0 alert-dismissible fade show small py-2 px-3 animate__animated animate__fadeInDown" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
+        
     </div>
 
     <!-- 主內容區 -->
     <main class="container py-3 py-md-4">
-        {% block content %}{% endblock %}
+        
+<div class="row justify-content-center py-4 py-md-5">
+    <div class="col-12 col-md-9 col-lg-7">
+        <!-- 復古精裝筆記本硬皮封面 -->
+        <div class="hardcover-book position-relative">
+            <!-- 書籤絲帶 -->
+            <div class="bookmark-ribbon" style="right: 36px; top: -14px;"></div>
+
+            <div class="text-center mb-4 mt-2">
+                <span class="text-warning small letter-spacing-2 font-handwrite fs-5">Chapter 02 • The Trace Log</span>
+                <h1 class="fs-1 fw-bold gold-embossed-title mt-2 mb-3">留 下 痕 跡</h1>
+                <p class="text-white-50 small mb-0 font-serif">不為變得更厲害，只為看清走過的路</p>
+            </div>
+
+            <!-- 書頁扉頁摘錄 -->
+            <div class="echo-torn-paper text-start my-4 py-3 px-4 shadow-sm" style="background: #faf6ee; color: #2b2b2b;">
+                <p class="mb-2 fst-italic font-serif" style="line-height: 1.8;">
+                    「十四天結束後，我本來以為自己會很有成就感。結果沒有。
+                </p>
+                <p class="mb-2 fst-italic font-serif" style="line-height: 1.8;">
+                    我只是看著那十四格，然後突然發現——我已經忘了自己前幾天到底做了什麼。
+                </p>
+                <p class="mb-0 fst-italic font-serif" style="line-height: 1.8;">
+                    於是，我開始每天記一點東西。今天做了什麼。學了什麼。哪裡失敗了。有時候，連今天為什麼不想做，都記下來。」
+                </p>
+            </div>
+
+            <div class="my-4 text-center">
+                <a href="/accounts/google/login/" 
+                   class="btn btn-light btn-lg w-100 py-3 d-inline-flex align-items-center justify-content-center shadow"
+                   style="color: #1f2d3d; font-weight: 600; border-radius: 8px;"
+                   onclick="if(window.journalSFX) window.journalSFX.playPageTurn();">
+                    <svg width="22" height="22" viewBox="0 0 24 24" class="me-2">
+                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    使用 Google 帳號翻開手帳
+                </a>
+                
+                <div class="mt-3">
+                    <a href="/accounts/dev-login/" class="text-warning-emphasis text-decoration-underline small" id="devLoginLink" onclick="if(window.journalSFX) window.journalSFX.playPageTurn();">
+                        <i class="bi bi-key me-1"></i> [開發測試] 一鍵以探索者帳號翻開手帳
+                    </a>
+                </div>
+            </div>
+
+            <p class="text-white-50 text-center small mb-0 font-serif">
+                <i class="bi bi-shield-check me-1 text-warning"></i> 純粹紙筆觸感 • 本地私密保存 • 無科技喧囂
+            </p>
+        </div>
+    </div>
+</div>
+
     </main>
 
     <!-- 更換方向便籤對話框 (Modal) -->
@@ -181,26 +201,26 @@
                 <div class="washi-tape washi-mint" style="top: -12px; left: 30px;"></div>
                 <div class="modal-header border-0 pb-1">
                     <h5 class="modal-title fs-6 fw-bold">
-                        🔖 {% trans "換個前進的方向" %}
+                        🔖 換個前進的方向
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body pt-2">
                     <p class="small text-muted mb-3 font-serif">
-                        {% trans "「走著走著如果發現走偏了，或者原來的挑戰已經結束，這很正常。換個新方向，之前的每頁痕跡依然會留在時間河流裡。」" %}
+                        「走著走著如果發現走偏了，或者原來的挑戰已經結束，這很正常。換個新方向，之前的每頁痕跡依然會留在時間河流裡。」
                     </p>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-dark">{% trans "這段時間，你想試著專注的一件事是……" %}</label>
-                        <input type="text" id="modalGoalTitle" class="form-control dot-grid-input" placeholder="{% trans '例如：每天讀一篇短篇、或是每天給自己二十分鐘寫作' %}">
+                        <label class="form-label small fw-bold text-dark">這段時間，你想試著專注的一件事是……</label>
+                        <input type="text" id="modalGoalTitle" class="form-control dot-grid-input" placeholder="例如：每天讀一篇短篇、或是每天給自己二十分鐘寫作">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-dark">{% trans "為什麼想換這個方向？ (初心，選填)" %}</label>
-                        <textarea id="modalGoalWhy" rows="2" class="form-control dot-grid-input" placeholder="{% trans '寫給未來的自己一兩句心裡話' %}"></textarea>
+                        <label class="form-label small fw-bold text-dark">為什麼想換這個方向？ (初心，選填)</label>
+                        <textarea id="modalGoalWhy" rows="2" class="form-control dot-grid-input" placeholder="寫給未來的自己一兩句心裡話"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">{% trans "暫時不換" %}</button>
-                    <button type="button" class="btn btn-sm btn-ink" onclick="submitNewGoal()">{% trans "確定定下新方向" %}</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">暫時不換</button>
+                    <button type="button" class="btn btn-sm btn-ink" onclick="submitNewGoal()">確定定下新方向</button>
                 </div>
             </div>
         </div>
@@ -209,8 +229,8 @@
     <!-- 頁尾 -->
     <footer class="text-center">
         <div class="container">
-            <p class="mb-1 font-serif">{% trans "「每天留下一點痕跡。不是為了變得更厲害，只是想知道如果一直記下去，我會變成什麼樣子。」" %}</p>
-            <p class="mb-0 text-muted small">{% trans "《04_Story.md》第二章 • A Little Wonder 手作手帳" %}</p>
+            <p class="mb-1 font-serif">「每天留下一點痕跡。不是為了變得更厲害，只是想知道如果一直記下去，我會變成什麼樣子。」</p>
+            <p class="mb-0 text-muted small">《04_Story.md》第二章 • A Little Wonder Handcrafted Notebook</p>
         </div>
     </footer>
 
@@ -222,7 +242,7 @@
     <!-- canvas-confetti 開源紙屑庫 -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <!-- 手帳觸感音效庫 -->
-    <script src="{% static 'js/sound_effects.js' %}"></script>
+    <script src="/static/js/sound_effects.js"></script>
 
     <script>
         // 初始化 Tippy.js 浮動工具提示
@@ -304,11 +324,11 @@
                 return;
             }
 
-            fetch("{% url 'goals:api_set' %}", {
+            fetch("/goals/api/set/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
+                    "X-CSRFToken": "qSATgIJ0vpPod6dn3xLSUGVRmgFE9Mw5v7T8uKN1ivxIHifIcrG5SiKv9Hcisd4H"
                 },
                 body: JSON.stringify({ title: title, why: why })
             })
@@ -328,6 +348,6 @@
             });
         }
     </script>
-    {% block extra_js %}{% endblock %}
+    
 </body>
 </html>

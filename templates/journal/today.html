@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}{{ today|date:"Y-m-d" }} · 今日工作區 · A Little Wonder{% endblock %}
+{% block title %}{{ today|date:"Y-m-d" }} · {% trans "今日工作區 · A Little Wonder" %}{% endblock %}
 
 {% block content %}
 <div class="row g-4">
@@ -14,7 +14,7 @@
           {{ today|date:"Y 年 m 月 d 日" }}
         </h4>
         <span class="badge-intent" id="header-completion-badge">
-          今日完成率：<span id="header-completion-rate">{{ completion_rate }}</span>% ({{ completed_tasks }}/{{ total_tasks }})
+          {% trans "今日完成率：" %}<span id="header-completion-rate">{{ completion_rate }}</span>% ({{ completed_tasks }}/{{ total_tasks }})
         </span>
       </div>
       
@@ -33,16 +33,16 @@
         {% csrf_token %}
         <div class="me-1">
           <span class="fw-bold d-block text-dark small" style="color: var(--note-intent) !important;">
-            🌅 晨間焦點意圖 (AM Intent)
+            🌅 {% trans "晨間焦點意圖 (AM Intent)" %}
           </span>
-          <span class="text-secondary" style="font-size: 0.76rem;">今天最重要、最想做好的一件事</span>
+          <span class="text-secondary" style="font-size: 0.76rem;">{% trans "今天最重要、最想做好的一件事" %}</span>
         </div>
         
         <input type="text" name="am_intent" class="form-control form-control-sm flex-grow-1" style="min-width: 220px;" 
-               placeholder="例如：專注完成核心模組重構、讀完子彈筆記第三章..." value="{{ entry.am_intent|default:'' }}">
+               placeholder="{% trans '例如：專注完成核心模組重構、讀完子彈筆記第三章...' %}" value="{{ entry.am_intent|default:'' }}">
         
         <button type="submit" name="save_am" class="btn btn-warning btn-sm fw-semibold px-3">
-          儲存意圖
+          {% trans "儲存意圖" %}
         </button>
       </form>
     </div>
@@ -53,48 +53,48 @@
       <!-- 標題與速記解說 -->
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
-          <div class="section-title-clean">敏捷速記 (Rapid Logging)</div>
-          <div class="section-subtitle-clean">用簡短語句隨手記錄。支援 <code>Ctrl + Enter</code> 快速送出</div>
+          <div class="section-title-clean">{% trans "敏捷速記 (Rapid Logging)" %}</div>
+          <div class="section-subtitle-clean">{% trans "用簡短語句隨手記錄。支援 <code>Ctrl + Enter</code> 快速送出" %}</div>
         </div>
       </div>
 
       <!-- 符號快捷工具列 -->
       <div class="symbol-toolbar mb-2">
-        <span class="text-secondary small me-1" style="font-size: 0.75rem;">插入符號：</span>
+        <span class="text-secondary small me-1" style="font-size: 0.75rem;">{% trans "插入符號：" %}</span>
         
         <button type="button" class="symbol-quick-btn" onclick="insertSymbol('• ')">
-          <code>•</code> 任務
+          <code>•</code> {% trans "任務" %}
         </button>
         
         <button type="button" class="symbol-quick-btn" onclick="insertSymbol('- ')">
-          <code>-</code> 筆記
+          <code>-</code> {% trans "筆記" %}
         </button>
         
         <button type="button" class="symbol-quick-btn" onclick="insertSymbol('○ ')">
-          <code>○</code> 事件
+          <code>○</code> {% trans "事件" %}
         </button>
         
         <button type="button" class="symbol-quick-btn" onclick="insertSymbol('★ ')">
-          <code>★</code> 反思
+          <code>★</code> {% trans "反思" %}
         </button>
         
         <button type="button" class="symbol-quick-btn" onclick="insertSymbol('! ')">
-          <code>!</code> 阻礙
+          <code>!</code> {% trans "阻礙" %}
         </button>
       </div>
       
       <!-- 速記輸入框 -->
       <div class="mb-3">
         <textarea id="rapid-log-input" class="form-control" rows="3" 
-                  placeholder="隨手寫下今天做了什麼、學了什麼、卡在哪裡...&#10;• 完成規格設計&#10;- 筆記：子彈筆記注重意圖性而非填滿時間&#10;! 阻礙：遇到設定問題&#10;★ 反思：減法生活讓我看見方向"></textarea>
+                  placeholder="{% trans '隨手寫下今天做了什麼、學了什麼、卡在哪裡...' %}"></textarea>
       </div>
       
       <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <button type="button" class="btn btn-primary" id="btn-ai-parse" onclick="submitRapidLog()">
-          <i class="bi bi-stars"></i>AI 智慧結構化
+          <i class="bi bi-stars"></i>{% trans "AI 智慧結構化" %}
         </button>
         <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#manualBulletModal">
-          <i class="bi bi-plus"></i>手動新增
+          <i class="bi bi-plus"></i>{% trans "手動新增" %}
         </button>
       </div>
 
@@ -102,8 +102,8 @@
 
       <!-- 子彈項目清單標題 -->
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="fw-bold small text-dark">今日子彈清單 (Daily Log)</div>
-        <div class="text-secondary small" style="font-size: 0.76rem;">點擊符號切換完成 (• ➔ x)</div>
+        <div class="fw-bold small text-dark">{% trans "今日子彈清單 (Daily Log)" %}</div>
+        <div class="text-secondary small" style="font-size: 0.76rem;">{% trans "點擊符號切換完成 (• ➔ x)" %}</div>
       </div>
 
       <!-- 骨架屏 (載入中) -->
@@ -139,31 +139,31 @@
                 <i class="bi bi-three-dots"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-end shadow-sm border p-1" style="font-size: 0.85rem;">
-                <li><h6 class="dropdown-header small text-muted px-2 py-1">子彈遷移 (Migration)</h6></li>
+                <li><h6 class="dropdown-header small text-muted px-2 py-1">{% trans "子彈遷移 (Migration)" %}</h6></li>
                 <li>
                   <a class="dropdown-item rounded-sm px-2 py-1" href="#" onclick="migrateBullet({{ bullet.id }}, 'tomorrow')">
-                    <span class="fw-bold text-dark me-1">></span> 遷移至明日
+                    <span class="fw-bold text-dark me-1">></span> {% trans "遷移至明日" %}
                   </a>
                 </li>
                 <li>
                   <a class="dropdown-item rounded-sm px-2 py-1" href="#" onclick="migrateBullet({{ bullet.id }}, 'monthly')">
-                    <span class="fw-bold text-dark me-1">></span> 遷移至本月月誌
+                    <span class="fw-bold text-dark me-1">></span> {% trans "遷移至本月月誌" %}
                   </a>
                 </li>
                 <li>
                   <a class="dropdown-item rounded-sm px-2 py-1" href="#" onclick="migrateBullet({{ bullet.id }}, 'future')">
-                    <span class="fw-bold text-dark me-1"><</span> 排程至未來誌
+                    <span class="fw-bold text-dark me-1"><</span> {% trans "排程至未來誌" %}
                   </a>
                 </li>
                 <li><hr class="dropdown-divider my-1"></li>
                 <li>
                   <a class="dropdown-item rounded-sm px-2 py-1 text-danger" href="#" onclick="migrateBullet({{ bullet.id }}, 'cancel')">
-                    <span class="fw-bold me-1">—</span> 劃掉放手 (取消)
+                    <span class="fw-bold me-1">—</span> {% trans "劃掉放手 (取消)" %}
                   </a>
                 </li>
                 <li>
                   <a class="dropdown-item rounded-sm px-2 py-1 text-secondary" href="#" onclick="deleteBullet({{ bullet.id }})">
-                    <i class="bi bi-trash me-1"></i>刪除此項目
+                    <i class="bi bi-trash me-1"></i>{% trans "刪除此項目" %}
                   </a>
                 </li>
               </ul>
@@ -173,8 +173,8 @@
         {% empty %}
           <div class="text-center py-4 text-secondary bg-white rounded border border-dashed p-4" id="empty-bullet-msg">
             <span class="fs-4 d-block mb-1">🌿</span>
-            <div class="fw-bold text-dark small mb-1">今天還沒有留下痕跡</div>
-            <p class="small text-muted mb-0">在上方速記框隨手寫下一件小事，開啟今天的子彈記錄！</p>
+            <div class="fw-bold text-dark small mb-1">{% trans "今天還沒有留下痕跡" %}</div>
+            <p class="small text-muted mb-0">{% trans "在上方速記框隨手寫下一件小事，開啟今天的子彈記錄！" %}</p>
           </div>
         {% endfor %}
       </ul>
@@ -190,8 +190,8 @@
       
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <div class="section-title-clean">🌙 晚間省思 (PM Reflection)</div>
-          <div class="section-subtitle-clean">睡前回顧：檢視今日進展，看見混亂中的累積</div>
+          <div class="section-title-clean">🌙 {% trans "晚間省思 (PM Reflection)" %}</div>
+          <div class="section-subtitle-clean">{% trans "睡前回顧：檢視今日進展，看見混亂中的累積" %}</div>
         </div>
       </div>
 
@@ -199,24 +199,24 @@
         {% csrf_token %}
         <div class="mb-3">
           <label class="form-label small fw-bold text-secondary mb-1">
-            今日狀態自評 (Energy & Mind)
+            {% trans "今日狀態自評 (Energy & Mind)" %}
           </label>
           <input type="range" name="mood_score" class="form-range" min="1" max="5" value="{{ entry.mood_score|default:3 }}">
           <div class="d-flex justify-content-between small text-muted font-monospace" style="font-size: 0.75rem;">
-            <span>1 低落</span>
-            <span>3 平靜</span>
-            <span>5 充實</span>
+            <span>1 {% trans "低落" %}</span>
+            <span>3 {% trans "平靜" %}</span>
+            <span>5 {% trans "充實" %}</span>
           </div>
         </div>
 
         <div class="mb-3">
-          <label class="form-label small fw-bold text-secondary mb-1">今日微小進展與覺察</label>
+          <label class="form-label small fw-bold text-secondary mb-1">{% trans "今日微小進展與覺察" %}</label>
           <textarea name="pm_reflection" class="form-control" rows="3" 
-                    placeholder="今天看見了什麼？哪些混亂其實也是前進的一部分？">{{ entry.pm_reflection|default:'' }}</textarea>
+                    placeholder="{% trans '今天看見了什麼？哪些混亂其實也是前進的一部分？' %}">{{ entry.pm_reflection|default:'' }}</textarea>
         </div>
 
         <button type="submit" name="save_pm" class="btn btn-outline-secondary btn-sm w-100 fw-semibold mb-3">
-          儲存晚間省思
+          {% trans "儲存晚間省思" %}
         </button>
       </form>
 
@@ -224,24 +224,24 @@
       <div class="p-3 bg-white rounded border">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div class="fw-bold small text-dark">
-            <i class="bi bi-chat-quote me-1"></i>AI 成長導師回饋
+            <i class="bi bi-chat-quote me-1"></i>{% trans "AI 成長導師回饋" %}
           </div>
           <button type="button" class="btn btn-sm text-secondary p-0 small" onclick="generateAIReflection('{{ today|date:"Y-m-d" }}')">
-            <i class="bi bi-arrow-repeat me-1"></i>生成反思
+            <i class="bi bi-arrow-repeat me-1"></i>{% trans "生成反思" %}
           </button>
         </div>
         
         <div id="ai-reflection-box" class="small text-secondary">
           {% if entry.ai_summary or entry.ai_reflection %}
             {% if entry.ai_summary %}
-              <div class="mb-2"><strong class="text-dark">📝 今日摘要：</strong>{{ entry.ai_summary }}</div>
+              <div class="mb-2"><strong class="text-dark">📝 {% trans "今日摘要：" %}</strong>{{ entry.ai_summary }}</div>
             {% endif %}
             {% if entry.ai_reflection %}
-              <div><strong class="text-dark">💡 溫暖洞察：</strong>{{ entry.ai_reflection }}</div>
+              <div><strong class="text-dark">💡 {% trans "溫暖洞察：" %}</strong>{{ entry.ai_reflection }}</div>
             {% endif %}
           {% else %}
             <div class="text-muted fst-italic">
-              點擊上方「生成反思」，AI 將為你客觀梳理今日走過的路，指出微小累積。
+              {% trans "點擊上方「生成反思」，AI 將為你客觀梳理今日走過的路，指出微小累積。" %}
             </div>
           {% endif %}
         </div>
@@ -253,9 +253,9 @@
     <div class="card card-paper p-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="fw-bold small text-dark">
-          <i class="bi bi-bullseye me-1 opacity-75"></i>當前衝刺焦點 (Focus Goals)
+          <i class="bi bi-bullseye me-1 opacity-75"></i>{% trans "當前衝刺焦點 (Focus Goals)" %}
         </div>
-        <a href="{% url 'goals:list' %}" class="small text-secondary text-decoration-none" style="font-size: 0.78rem;">管理目標 ➔</a>
+        <a href="{% url 'goals:list' %}" class="small text-secondary text-decoration-none" style="font-size: 0.78rem;">{% trans "管理目標 ➔" %}</a>
       </div>
       <ul class="list-unstyled mb-0 small">
         {% for goal in focus_goals %}
@@ -263,7 +263,7 @@
             <span class="badge-clean me-1">{{ goal.get_timeframe_display }}</span> {{ goal.title }}
           </li>
         {% empty %}
-          <li class="text-muted py-1" style="font-size: 0.82rem;">尚無進行中目標，可至「人生清單」設定焦點。</li>
+          <li class="text-muted py-1" style="font-size: 0.82rem;">{% trans "尚無進行中目標，可至「人生清單」設定焦點。" %}</li>
         {% endfor %}
       </ul>
     </div>
@@ -276,28 +276,28 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content card-paper border">
       <div class="modal-header border-bottom py-2 px-3">
-        <h6 class="modal-title fw-bold mb-0">手動新增子彈項目</h6>
+        <h6 class="modal-title fw-bold mb-0">{% trans "手動新增子彈項目" %}</h6>
         <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-3">
         <div class="mb-3">
-          <label class="form-label small fw-bold text-secondary">子彈類型</label>
+          <label class="form-label small fw-bold text-secondary">{% trans "子彈類型" %}</label>
           <select id="modal-item-type" class="form-select form-select-sm">
-            <option value="task">• 任務 (Task) - 需要執行的具體待辦</option>
-            <option value="note">- 筆記 (Note) - 事實、觀念或靈感記錄</option>
-            <option value="event">○ 事件 (Event) - 特定發生的經歷或會議</option>
-            <option value="reflection">★ 反思 (Reflection) - 心態覺察與體悟</option>
-            <option value="obstacle">! 阻礙 (Obstacle) - 卡點、挫折與問題</option>
+            <option value="task">• {% trans "任務" %}</option>
+            <option value="note">- {% trans "筆記" %}</option>
+            <option value="event">○ {% trans "事件" %}</option>
+            <option value="reflection">★ {% trans "反思" %}</option>
+            <option value="obstacle">! {% trans "阻礙" %}</option>
           </select>
         </div>
         <div class="mb-3">
-          <label class="form-label small fw-bold text-secondary">內容</label>
-          <input type="text" id="modal-bullet-content" class="form-control form-control-sm" placeholder="輸入內容...">
+          <label class="form-label small fw-bold text-secondary">{% trans "內容" %}</label>
+          <input type="text" id="modal-bullet-content" class="form-control form-control-sm" placeholder="{% trans '輸入內容...' %}">
         </div>
       </div>
       <div class="modal-footer border-top py-2 px-3">
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="createSingleBullet()">確認新增</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">{% trans "取消" %}</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="createSingleBullet()">{% trans "確認新增" %}</button>
       </div>
     </div>
   </div>

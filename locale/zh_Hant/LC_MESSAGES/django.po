@@ -1,0 +1,498 @@
+# Traditional Chinese translations for AI Learning Journal System.
+msgid ""
+msgstr ""
+"Project-Id-Version: AI Learning Journal System 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-06 07:00+0800\n"
+"PO-Revision-Date: 2026-09-06 07:00+0800\n"
+"Last-Translator: Antigravity\n"
+"Language-Team: Traditional Chinese\n"
+"Language: zh_Hant\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "留下痕跡｜手帳學習日誌"
+msgstr "留下痕跡｜手帳學習日誌"
+
+msgid "留下痕跡｜翻開手帳"
+msgstr "留下痕跡｜翻開手帳"
+
+msgid "留下痕跡｜時間河流"
+msgstr "留下痕跡｜時間河流"
+
+msgid "翻開第一頁｜設定前進方向"
+msgstr "翻開第一頁｜設定前進方向"
+
+msgid "留下痕跡"
+msgstr "留下痕跡"
+
+msgid "手帳學習日誌"
+msgstr "手帳學習日誌"
+
+msgid "時間河流"
+msgstr "時間河流"
+
+msgid "痕跡長河"
+msgstr "痕跡長河"
+
+msgid "River of Traces"
+msgstr "痕跡長河"
+
+msgid "漫步翻看時間河流裡的每日痕跡"
+msgstr "漫步翻看時間河流裡的每日痕跡"
+
+msgid "手帳音效：翻頁、書寫、蓋印"
+msgstr "手帳音效：翻頁、書寫、蓋印"
+
+msgid "音效"
+msgstr "音效"
+
+msgid "方向："
+msgstr "方向："
+
+msgid "更換前進方向"
+msgstr "更換前進方向"
+
+msgid "點擊鉛筆隨時更換前進方向"
+msgstr "點擊鉛筆隨時更換前進方向"
+
+msgid "當前專注方向，點擊鉛筆可更換"
+msgstr "當前專注方向，點擊鉛筆可更換"
+
+msgid "闔上手帳"
+msgstr "闔上手帳"
+
+msgid "登入"
+msgstr "登入"
+
+msgid "語言"
+msgstr "語言"
+
+msgid "繁體中文"
+msgstr "繁體中文"
+
+msgid "English"
+msgstr "English"
+
+msgid "換個前進的方向"
+msgstr "換個前進的方向"
+
+msgid "「走著走著如果發現走偏了，或者原來的挑戰已經結束，這很正常。換個新方向，之前的每頁痕跡依然會留在時間河流裡。」"
+msgstr "「走著走著如果發現走偏了，或者原來的挑戰已經結束，這很正常。換個新方向，之前的每頁痕跡依然會留在時間河流裡。」"
+
+msgid "這段時間，你想試著專注的一件事是……"
+msgstr "這段時間，你想試著專注的一件事是……"
+
+msgid "例如：每天讀一篇短篇、或是每天給自己二十分鐘寫作"
+msgstr "例如：每天讀一篇短篇、或是每天給自己二十分鐘寫作"
+
+msgid "為什麼想換這個方向？ (初心，選填)"
+msgstr "為什麼想換這個方向？ (初心，選填)"
+
+msgid "寫給未來的自己一兩句心裡話"
+msgstr "寫給未來的自己一兩句心裡話"
+
+msgid "暫時不換"
+msgstr "暫時不換"
+
+msgid "確定定下新方向"
+msgstr "確定定下新方向"
+
+msgid "「每天留下一點痕跡。不是為了變得更厲害，只是想知道如果一直記下去，我會變成什麼樣子。」"
+msgstr "「每天留下一點痕跡。不是為了變得更厲害，只是想知道如果一直記下去，我會變成什麼樣子。」"
+
+msgid "《04_Story.md》第二章 • A Little Wonder 手作手帳"
+msgstr "《04_Story.md》第二章 • A Little Wonder 手作手帳"
+
+msgid "《04_Story.md》第二章 • A Little Wonder Handcrafted Notebook"
+msgstr "《04_Story.md》第二章 • A Little Wonder 手作手帳"
+
+msgid "第一頁 • 定錨前進方向"
+msgstr "第一頁 • 定錨前進方向"
+
+msgid "First Page • Anchor Goal"
+msgstr "第一頁 • 定錨前進方向"
+
+msgid "這段日子，你想走向哪裡？"
+msgstr "這段日子，你想走向哪裡？"
+
+msgid "不用是多麼偉大的誓言。可能只是：十四天完成一個微小工具、每天寫三行程式、或是每天留二十分鐘安靜坐著。"
+msgstr "不用是多麼偉大的誓言。可能只是：十四天完成一個微小工具、每天寫三行程式、或是每天留二十分鐘安靜坐著。"
+
+msgid "走著走著如果迷路或完成了，你隨時可以在頁首換個新方向。"
+msgstr "走著走著如果迷路或完成了，你隨時可以在頁首換個新方向。"
+
+msgid "🎯 這段時間，我想試著專注的一件事是……"
+msgstr "🎯 這段時間，我想試著專注的一件事是……"
+
+msgid "例如：連續十四天，每天給自己留一點時間寫程式"
+msgstr "例如：連續十四天，每天給自己留一點時間寫程式"
+
+msgid "簡短一句話即可，這將是這段日記的篇章標題。"
+msgstr "簡短一句話即可，這將是這段日記的篇章標題。"
+
+msgid "💡 為什麼想做這件事？ (初心與期待，選填)"
+msgstr "💡 為什麼想做這件事？ (初心與期待，選填)"
+
+msgid "例如：想知道想和做之間的距離，到底能不能被拉近一些。"
+msgstr "例如：想知道想和做之間的距離，到底能不能被拉近一些。"
+
+msgid "寫給未來某一天的自己看。"
+msgstr "寫給未來某一天的自己看。"
+
+msgid "開始翻開日記，留下痕跡 ➔"
+msgstr "開始翻開日記，留下痕跡 ➔"
+
+msgid "開啟/退出純淨手帳專注模式 (Esc)"
+msgstr "開啟/退出純淨手帳專注模式 (Esc)"
+
+msgid "專注模式"
+msgstr "專注模式"
+
+msgid "退出專注 (Esc)"
+msgstr "退出專注 (Esc)"
+
+msgid "切換為無拘無束的自由手帳模式"
+msgstr "切換為無拘無束的自由手帳模式"
+
+msgid "切換為自由速寫"
+msgstr "切換為自由速寫"
+
+msgid "切換為故事四問"
+msgstr "切換為故事四問"
+
+msgid "痕跡已蓋印留存"
+msgstr "痕跡已蓋印留存"
+
+msgid "今天的痕跡"
+msgstr "今天的痕跡"
+
+msgid "墨跡已沉澱歸檔"
+msgstr "墨跡已沉澱歸檔"
+
+msgid "墨水已備好，隨寫即存"
+msgstr "墨水已備好，隨寫即存"
+
+msgid "今日天候：晴朗日光"
+msgstr "今日天候：晴朗日光"
+
+msgid "今日天候：濛濛細雨"
+msgstr "今日天候：濛濛細雨"
+
+msgid "今日天候：寂靜深夜"
+msgstr "今日天候：寂靜深夜"
+
+msgid "晴"
+msgstr "晴"
+
+msgid "雨"
+msgstr "雨"
+
+msgid "夜"
+msgstr "夜"
+
+msgid "心情：捕捉到靈光或小成就"
+msgstr "心情：捕捉到靈光或小成就"
+
+msgid "心情：思緒繁雜混亂"
+msgstr "心情：思緒繁雜混亂"
+
+msgid "心情：有微小萌芽與新起點"
+msgstr "心情：有微小萌芽與新起點"
+
+msgid "微光"
+msgstr "微光"
+
+msgid "混亂"
+msgstr "混亂"
+
+msgid "萌芽"
+msgstr "萌芽"
+
+msgid "1. 今天做了什麼？"
+msgstr "1. 今天做了什麼？"
+
+msgid "(行動的痕跡，哪怕再微小)"
+msgstr "(行動的痕跡，哪怕再微小)"
+
+msgid "擲骰子換個靈感提示"
+msgstr "擲骰子換個靈感提示"
+
+msgid "換個提示"
+msgstr "換個提示"
+
+msgid "• 寫了幾行程式、讀了一篇文章、嘗試解決了一個難題..."
+msgstr "• 寫了幾行程式、讀了一篇文章、嘗試解決了一個難題..."
+
+msgid "2. 今天學到了什麼？"
+msgstr "2. 今天學到了什麼？"
+
+msgid "(認知、技巧或微小頓悟)"
+msgstr "(認知、技巧或微小頓悟)"
+
+msgid "• 發現了某個新方法、或是明白為什麼過去會卡住..."
+msgstr "• 發現了某個新方法、或是明白為什麼過去會卡住..."
+
+msgid "3. 哪裡失敗了？"
+msgstr "3. 哪裡失敗了？"
+
+msgid "(誠實面對挫折、失控與阻礙)"
+msgstr "(誠實面對挫折、失控與阻礙)"
+
+msgid "• 原本想做完卻沒搞定、因為煩躁放棄了某件事..."
+msgstr "• 原本想做完卻沒搞定、因為煩躁放棄了某件事..."
+
+msgid "4. 為什麼不想做？ / 當下心情"
+msgstr "4. 為什麼不想做？ / 當下心情"
+
+msgid "(誠實傾聽內心的抗拒)"
+msgstr "(誠實傾聽內心的抗拒)"
+
+msgid "• 覺得疲憊、害怕面對不確定性、心浮氣躁..."
+msgstr "• 覺得疲憊、害怕面對不確定性、心浮氣躁..."
+
+msgid "今日自由手帳隨筆"
+msgstr "今日自由手帳隨筆"
+
+msgid "(不拘形式，寫下腦海裡的混亂與文字)"
+msgstr "(不拘形式，寫下腦海裡的混亂與文字)"
+
+msgid "在這裡隨意寫下今天的混亂、牢騷、嘗試或微小頓悟..."
+msgstr "在這裡隨意寫下今天的混亂、牢騷、嘗試或微小頓悟..."
+
+msgid "即時字數統計與墨水量"
+msgstr "即時字數統計與墨水量"
+
+msgid "字"
+msgstr "字"
+
+msgid "• 誠實寫下即可"
+msgstr "• 誠實寫下即可"
+
+msgid "留下一頁痕跡"
+msgstr "留下一頁痕跡"
+
+msgid "心靈"
+msgstr "心靈"
+
+msgid "郵籤"
+msgstr "郵籤"
+
+msgid "今日簡記 • 混亂的沉澱"
+msgstr "今日簡記 • 混亂的沉澱"
+
+msgid "今日簡記"
+msgstr "今日簡記"
+
+msgid "頁緣觀察"
+msgstr "頁緣觀察"
+
+msgid "靈魂提問"
+msgstr "靈魂提問"
+
+msgid "靈魂提問："
+msgstr "靈魂提問："
+
+msgid "🕊️ 靈魂提問："
+msgstr "🕊️ 靈魂提問："
+
+msgid "[今晚隨筆] 在這裡寫下今晚的一點體會（或直接闔上手帳，留給自己一夜沉澱）..."
+msgstr "[今晚隨筆] 在這裡寫下今晚的一點體會（或直接闔上手帳，留給自己一夜沉澱）..."
+
+msgid "留下今晚筆記"
+msgstr "留下今晚筆記"
+
+msgid "今晚手寫筆記："
+msgstr "今晚手寫筆記："
+
+msgid "💬 今晚手寫筆記："
+msgstr "💬 今晚手寫筆記："
+
+msgid "時間的回音"
+msgstr "時間的回音"
+
+msgid "回望時光"
+msgstr "回望時光"
+
+msgid "第二章｜留下痕跡"
+msgstr "第二章｜留下痕跡"
+
+msgid "「回頭看才發現，有些事情我以為自己做了很多，其實根本沒有。有些事情我以為自己一直在失敗，卻已經比以前走遠了一點。」"
+msgstr "「回頭看才發現，有些事情我以為自己做了很多，其實根本沒有。有些事情我以為自己一直在失敗，卻已經比以前走遠了一點。」"
+
+msgid "手帳心法："
+msgstr "手帳心法："
+
+msgid "不用強求每天都有豐功偉業。真實寫下抗拒與卡頓，本身就是最深邃的成長痕跡。"
+msgstr "不用強求每天都有豐功偉業。真實寫下抗拒與卡頓，本身就是最深邃的成長痕跡。"
+
+msgid "翻閱時間河流中的過往篇章"
+msgstr "翻閱時間河流中的過往篇章"
+
+msgid "• 哪怕只是寫了兩行程式、讀了半篇文章，甚至是整理了書桌"
+msgstr "• 哪怕只是寫了兩行程式、讀了半篇文章，甚至是整理了書桌"
+
+msgid "• 哪怕只是鼓起勇氣打開了那個逃避好幾天的檔案"
+msgstr "• 哪怕只是鼓起勇氣打開了那個逃避好幾天的檔案"
+
+msgid "• 哪怕只是坐在椅子上安靜思考了十分鐘接下來要先做什麼"
+msgstr "• 哪怕只是坐在椅子上安靜思考了十分鐘接下來要先做什麼"
+
+msgid "• 發現了某個新工具或快捷鍵、或想通了為什麼之前會卡住"
+msgstr "• 發現了某個新工具或快捷鍵、或想通了為什麼之前會卡住"
+
+msgid "• 學到了：自己什麼時候精神最集中，什麼時候需要放空充電"
+msgstr "• 學到了：自己什麼時候精神最集中，什麼時候需要放空充電"
+
+msgid "• 明白了一件事：慢慢做反而比焦急趕工走得更穩"
+msgstr "• 明白了一件事：慢慢做反而比焦急趕工走得更穩"
+
+msgid "• 原本打算做完卻中途滑了半小時手機，誠實寫下"
+msgstr "• 原本打算做完卻中途滑了半小時手機，誠實寫下"
+
+msgid "• 試了半天還是報錯，最後感到沮喪關掉了視窗"
+msgstr "• 試了半天還是報錯，最後感到沮喪關掉了視窗"
+
+msgid "• 承認自己今天真的沒在狀態，不用給自己道德審判"
+msgstr "• 承認自己今天真的沒在狀態，不用給自己道德審判"
+
+msgid "• 其實是害怕做出來不夠完美，所以遲遲不敢開始"
+msgstr "• 其實是害怕做出來不夠完美，所以遲遲不敢開始"
+
+msgid "• 只是純粹太疲憊了，大腦像浸了水一樣轉不動"
+msgstr "• 只是純粹太疲憊了，大腦像浸了水一樣轉不動"
+
+msgid "• 心裡在嘀咕這件事到底有沒有意義，感到盲目"
+msgstr "• 心裡在嘀咕這件事到底有沒有意義，感到盲目"
+
+msgid "已從本機還原未存草稿"
+msgstr "已從本機還原未存草稿"
+
+msgid "墨水書寫中..."
+msgstr "墨水書寫中..."
+
+msgid "墨跡已自動隱入紙張"
+msgstr "墨跡已自動隱入紙張"
+
+msgid "【做了什麼】"
+msgstr "【做了什麼】"
+
+msgid "【學到了什麼】"
+msgstr "【學到了什麼】"
+
+msgid "【哪裡失敗了】"
+msgstr "【哪裡失敗了】"
+
+msgid "【失敗與卡住】"
+msgstr "【失敗與卡住】"
+
+msgid "【抗拒與心情】"
+msgstr "【抗拒與心情】"
+
+msgid "【手帳隨筆】"
+msgstr "【手帳隨筆】"
+
+msgid "請至少留下一句今天的微小痕跡。"
+msgstr "請至少留下一句今天的微小痕跡。"
+
+msgid "墨水風乾中..."
+msgstr "墨水風乾中..."
+
+msgid "今日痕跡已歸檔"
+msgstr "今日痕跡已歸檔"
+
+msgid "儲存失敗，請重試"
+msgstr "儲存失敗，請重試"
+
+msgid "連線失敗，請檢查網路連線"
+msgstr "連線失敗，請檢查網路連線"
+
+msgid "今晚手寫筆記已烙印留存。"
+msgstr "今晚手寫筆記已烙印留存。"
+
+msgid "保存失敗："
+msgstr "保存失敗："
+
+msgid "請填寫新的方向名稱"
+msgstr "請填寫新的方向名稱"
+
+msgid "設定失敗"
+msgstr "設定失敗"
+
+msgid "連線失敗，請稍後重試"
+msgstr "連線失敗，請稍後重試"
+
+msgid "蓋印於"
+msgstr "蓋印於"
+
+msgid "上一頁"
+msgstr "上一頁"
+
+msgid "下一頁"
+msgstr "下一頁"
+
+msgid "第"
+msgstr "第"
+
+msgid "頁 / 共"
+msgstr "頁 / 共"
+
+msgid "時間河流裡還沒有任何痕跡。"
+msgstr "時間河流裡還沒有任何痕跡。"
+
+msgid "「萬事起頭難，只要記下今天的一兩句，這條河就會開始流動。」"
+msgstr "「萬事起頭難，只要記下今天的一兩句，這條河就會開始流動。」"
+
+msgid "翻開手帳，留下第一筆痕跡"
+msgstr "翻開手帳，留下第一筆痕跡"
+
+msgid "重溫隨機一頁"
+msgstr "重溫隨機一頁"
+
+msgid "返回今日書寫"
+msgstr "返回今日書寫"
+
+msgid "章節過濾:"
+msgstr "章節過濾:"
+
+msgid "全部痕跡"
+msgstr "全部痕跡"
+
+msgid "當前"
+msgstr "當前"
+
+msgid "隨機翻開一則過往的記憶痕跡"
+msgstr "隨機翻開一則過往的記憶痕跡"
+
+msgid "Chapter 02 • The Trace Log"
+msgstr "第二章 • 留下痕跡"
+
+msgid "第二章 • 留下痕跡"
+msgstr "第二章 • 留下痕跡"
+
+msgid "留 下 痕 跡"
+msgstr "留 下 痕 跡"
+
+msgid "不為變得更厲害，只為看清走過的路"
+msgstr "不為變得更厲害，只為看清走過的路"
+
+msgid "「十四天結束後，我本來以為自己會很有成就感。結果沒有。"
+msgstr "「十四天結束後，我本來以為自己會很有成就感。結果沒有。"
+
+msgid "我只是看著那十四格，然後突然發現——我已經忘了自己前幾天到底做了什麼。"
+msgstr "我只是看著那十四格，然後突然發現——我已經忘了自己前幾天到底做了什麼。"
+
+msgid "於是，我開始每天記一點東西。今天做了什麼。學了什麼。哪裡失敗了。有時候，連今天為什麼不想做，都記下來。」"
+msgstr "於是，我開始每天記一點東西。今天做了什麼。學了什麼。哪裡失敗了。有時候，連今天為什麼不想做，都記下來。」"
+
+msgid "使用 Google 帳號翻開手帳"
+msgstr "使用 Google 帳號翻開手帳"
+
+msgid "[開發測試] 一鍵以探索者帳號翻開手帳"
+msgstr "[開發測試] 一鍵以探索者帳號翻開手帳"
+
+msgid "純粹紙筆觸感 • 本地私密保存 • 無科技喧囂"
+msgstr "純粹紙筆觸感 • 本地私密保存 • 無科技喧囂"
+

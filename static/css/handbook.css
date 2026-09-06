@@ -1,53 +1,59 @@
 /* ==============================================================================
-   手帳專屬美學樣式庫 (The Trace Handbook Theme - Deluxe Edition)
-   融合和紙膠帶、點陣手帳紙、復古橡皮印章、書籤絲帶、火漆印、鋼筆墨水感與極致觸感動態
+   A Little Wonder - 手帳學習日誌樣式庫 (The Trace Handbook)
+   第二章｜留下痕跡｜AI 學習日誌
+   依據 IT/roles/designer.md 與 03_Product_Style.md 視覺形象規範
+   核心色調：燕麥白 (#FAF5F0)、深可可 (#4A3B32)、暖陽橘 (#E07A5F)、霧湖藍 (#A0BDC9)
+   重點在於營造安靜、自然、有溫度的紙張與書寫心流體驗。
    ============================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Noto+Serif+TC:wght@400;600;700&family=Patrick+Hand&family=Zen+Maru+Gothic:wght@400;500;700&display=swap');
 
 :root {
-    --paper-base: #f6f3eb;
-    --paper-card: #fdfbf7;
-    --paper-card-warm: #fcf9f2;
-    --ink-primary: #1f2d3d;
-    --ink-secondary: #3b4e65;
-    --ink-light: #5f7085;
-    --text-main: #2b2b2b;
-    --text-muted: #736f69;
-    --border-soft: #e3ded6;
-    --border-dashed: #dcd5c7;
+    /* 核心紙質色彩系統 (03_Product_Style.md) */
+    --paper-base: #FAF5F0;          /* 燕麥暖白背景 */
+    --paper-card: #FDFBF7;          /* 純淨手帳紙張卡片 */
+    --paper-card-warm: #FAF6EE;
     
-    /* 復古手帳色彩系統 */
-    --stamp-red: #b9443b;
-    --stamp-red-dark: #8c2e26;
-    --ochre-gold: #c49a45;
-    --gold-shimmer: #d4af37;
-    --sage-green: #5a8a6e;
-    --clay-rose: #be6b62;
-    --soft-amber: #e69d45;
+    --ink-primary: #4A3B32;         /* 深可可墨色：標題、邊框與導航書脊 */
+    --ink-secondary: #635247;
+    --ink-light: #7E6C60;
     
-    /* 和紙膠帶色彩庫 */
-    --washi-yellow: rgba(240, 222, 150, 0.82);
-    --washi-rose: rgba(235, 185, 178, 0.82);
-    --washi-mint: rgba(188, 220, 202, 0.82);
-    --washi-sky: rgba(186, 212, 235, 0.82);
-    --washi-kraft: rgba(212, 192, 168, 0.85);
-    --washi-lavender: rgba(215, 200, 235, 0.82);
+    --text-main: #3E2F27;           /* 主要文字：沉穩樸實的深可可鉛筆墨感 */
+    --text-muted: #8E7E73;          /* 次要註解與頁緣弱化文字 */
+    
+    --border-soft: #E6DDD5;         /* 溫柔紙緣細線 */
+    --border-dashed: #DFD5CA;
+    
+    /* 情感與氛圍共鳴色彩 */
+    --stamp-terracotta: #E07A5F;    /* 暖陽橘：微光、打卡、印章印痕 */
+    --stamp-terracotta-dark: #C45F45;
+    --ochre-gold: #D4A574;          /* 暖陽琥珀：靈感提示、重點標註 */
+    --misty-lake: #A0BDC9;          /* 霧湖藍：時間河流、冷靜留白、空間引導 */
+    --misty-lake-light: #C8DBE3;
+    --sage-green: #52A77A;          /* 草本綠：存檔完成、萌芽心情 */
+    --soft-amber: #F4A261;
+    
+    /* 輕盈和紙膠帶色彩 (低飽和、溫和點綴) */
+    --washi-yellow: rgba(244, 226, 168, 0.75);
+    --washi-rose: rgba(235, 185, 178, 0.75);
+    --washi-mint: rgba(188, 220, 202, 0.75);
+    --washi-sky: rgba(160, 189, 201, 0.75);
+    --washi-kraft: rgba(212, 192, 168, 0.8);
 }
 
 body {
     background-color: var(--paper-base);
     color: var(--text-main);
     font-family: 'Zen Maru Gothic', 'Noto Serif TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.8;
-    background-image: radial-gradient(circle, #ded9ce 0.85px, transparent 0.85px);
-    background-size: 24px 24px;
+    line-height: 1.85;
+    background-image: radial-gradient(circle, rgba(142, 126, 115, 0.09) 1px, transparent 1px);
+    background-size: 26px 26px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* 經典手寫英文字體 & 襯線體 */
+/* 字型層次 */
 .font-handwrite {
     font-family: 'Caveat', 'Patrick Hand', cursive;
 }
@@ -56,92 +62,69 @@ body {
     font-family: 'Noto Serif TC', Georgia, serif;
 }
 
-/* ================= 和紙膠帶裝飾 (Deluxe Washi Tape) ================= */
+/* ================= 和紙膠帶裝飾 (克制典雅) ================= */
 .washi-tape {
     position: absolute;
-    height: 28px;
-    width: 115px;
-    top: -13px;
+    height: 24px;
+    width: 100px;
+    top: -11px;
     left: 28px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    opacity: 0.92;
-    transform: rotate(-2.5deg);
+    box-shadow: 0 1px 3px rgba(62, 47, 39, 0.08);
+    opacity: 0.88;
+    transform: rotate(-2deg);
     z-index: 10;
     pointer-events: none;
     clip-path: polygon(
         0% 8%, 4% 0%, 96% 0%, 100% 8%, 98% 92%, 93% 100%, 7% 100%, 1% 92%
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(62, 47, 39, 0.05);
 }
 
 .washi-yellow { 
     background: var(--washi-yellow); 
-    background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.25) 5px, rgba(255,255,255,0.25) 10px);
 }
 .washi-rose { 
     background: var(--washi-rose); 
-    transform: rotate(2deg); 
+    transform: rotate(1.8deg); 
     left: auto; 
     right: 32px; 
 }
 .washi-mint { 
     background: var(--washi-mint); 
-    transform: rotate(-3.2deg); 
+    transform: rotate(-2.5deg); 
 }
 .washi-sky { 
     background: var(--washi-sky); 
-    transform: rotate(1.8deg); 
+    transform: rotate(1.5deg); 
 }
 .washi-kraft { 
     background: var(--washi-kraft); 
-    transform: rotate(-1.5deg); 
+    transform: rotate(-1.2deg); 
 }
 
 /* ================= 手帳精裝紙張卡片 (Handbook Card) ================= */
 .handbook-card {
     background-color: var(--paper-card);
     border: 1px solid var(--border-soft);
-    border-radius: 9px;
-    box-shadow: 0 4px 18px rgba(43, 43, 43, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(62, 47, 39, 0.05), 0 1px 3px rgba(62, 47, 39, 0.03);
     position: relative;
     transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .handbook-card:hover {
-    box-shadow: 0 9px 28px rgba(43, 43, 43, 0.07), 0 2px 5px rgba(0, 0, 0, 0.03);
-}
-
-/* 書籤絲帶 (Bookmark Ribbon) */
-.bookmark-ribbon {
-    position: absolute;
-    top: -12px;
-    right: 26px;
-    width: 24px;
-    height: 52px;
-    background: linear-gradient(135deg, #c43d34, #96261f);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), 50% 100%, 0 calc(100% - 10px));
-    z-index: 12;
-    transform-origin: top center;
-    animation: ribbonSway 3s ease-in-out infinite alternate;
-    pointer-events: none;
-    border-top: 2px solid var(--gold-shimmer);
-}
-
-@keyframes ribbonSway {
-    0% { transform: rotate(1deg); }
-    100% { transform: rotate(-1.5deg); }
+    box-shadow: 0 8px 24px rgba(62, 47, 39, 0.08), 0 2px 6px rgba(62, 47, 39, 0.03);
 }
 
 /* 點陣書寫區域 (Dot Grid Canvas) */
 .dot-grid-input {
-    background-color: #ffffff;
-    background-image: radial-gradient(circle, #e4ded4 0.8px, transparent 0.8px);
+    background-color: #FFFFFF;
+    background-image: radial-gradient(circle, #EAE4DC 0.8px, transparent 0.8px);
     background-size: 18px 18px;
     border: 1px solid var(--border-soft);
-    border-radius: 6px;
-    padding: 13px 18px;
+    border-radius: 8px;
+    padding: 14px 18px;
     color: var(--text-main);
     font-size: 0.98rem;
     line-height: 1.85;
@@ -149,29 +132,29 @@ body {
 }
 
 .dot-grid-input:focus {
-    background-color: #ffffff;
-    border-color: var(--ink-primary);
-    box-shadow: 0 0 0 3px rgba(31, 45, 61, 0.1);
+    background-color: #FFFFFF;
+    border-color: var(--stamp-terracotta);
+    box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.16);
     outline: none;
 }
 
 /* ================= 復古橡皮章戳印 (Rubber Stamp) ================= */
 .stamp-seal {
     display: inline-block;
-    padding: 7px 16px;
+    padding: 6px 14px;
     text-transform: uppercase;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--stamp-red);
-    border: 2px dashed var(--stamp-red);
+    letter-spacing: 0.08em;
+    color: var(--stamp-terracotta);
+    border: 1.5px dashed var(--stamp-terracotta);
     border-radius: 6px;
-    transform: rotate(-5deg);
+    transform: rotate(-4deg);
     opacity: 0.92;
     position: relative;
     user-select: none;
-    box-shadow: 0 0 0 3px rgba(185, 68, 59, 0.06);
-    background: rgba(253, 251, 247, 0.85);
+    box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.08);
+    background: rgba(253, 251, 247, 0.95);
 }
 
 .stamp-sealed-anim {
@@ -179,130 +162,79 @@ body {
 }
 
 @keyframes stampIn {
-    0% {
-        opacity: 0;
-        transform: scale(2.6) rotate(18deg);
-        filter: blur(2px);
-    }
-    60% {
-        opacity: 1;
-        transform: scale(0.9) rotate(-7deg);
-        filter: blur(0);
-    }
-    100% {
-        opacity: 0.92;
-        transform: scale(1) rotate(-5deg);
-    }
+    0% { transform: scale(2.2) rotate(12deg); opacity: 0; }
+    60% { transform: scale(0.92) rotate(-5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(-4deg); opacity: 0.92; }
 }
 
-/* ================= 心情與天氣印章按鈕 (Stamp Picker) ================= */
-.stamp-picker-group {
-    background: #f6f1e6;
-    padding: 4px 8px;
-    border-radius: 24px;
-    border: 1px solid var(--border-soft);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
+/* 互動印章式切換按鈕 */
 .stamp-btn {
-    background: #ffffff;
-    border: 1px solid var(--border-soft);
-    border-radius: 20px;
-    padding: 4px 13px;
+    background: transparent;
+    border: 1px dashed var(--border-soft);
+    border-radius: 6px;
+    padding: 4px 11px;
     font-size: 0.85rem;
     color: var(--text-muted);
+    transition: all 0.2s ease;
     cursor: pointer;
-    transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
     user-select: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
 }
 
 .stamp-btn:hover {
-    background: #fbf6ec;
+    border-color: var(--ink-primary);
     color: var(--text-main);
-    transform: translateY(-2px);
-    border-color: #d6ccb8;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .stamp-btn.active {
-    background: #eedcb4;
-    border-color: var(--ochre-gold);
-    color: #43300e;
-    font-weight: 700;
-    box-shadow: 0 2px 8px rgba(196, 154, 69, 0.28);
-    transform: scale(1.04);
+    border: 1px solid var(--stamp-terracotta);
+    background-color: #FFF9F5;
+    color: var(--stamp-terracotta);
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(224, 122, 95, 0.12);
 }
 
-/* ================= 靈魂提問手寫明信片 (Soul Letter & Postcard) ================= */
+/* ================= 靈魂信箋卡片 (Soul Letter Box) ================= */
 .soul-letter {
-    background: #faf6ee;
-    border: 1px solid #ddd6c8;
-    border-radius: 7px;
-    padding: 26px;
+    background: #FFFCF8;
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--stamp-terracotta);
+    border-radius: 8px;
+    padding: 24px;
     position: relative;
-    box-shadow: inset 0 0 24px rgba(215, 204, 182, 0.22), 0 6px 18px rgba(0,0,0,0.04);
-    animation: unfoldCard 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* 復古航空郵簡邊紋 (Airmail Stripe Border) */
-.airmail-card {
-    position: relative;
-    border: 8px solid transparent;
-    border-image: repeating-linear-gradient(
-        -45deg,
-        #b9443b 0, #b9443b 14px,
-        transparent 14px, transparent 20px,
-        #29405b 20px, #29405b 34px,
-        transparent 34px, transparent 40px
-    ) 12;
-}
-
-@keyframes unfoldCard {
-    from {
-        opacity: 0;
-        transform: translateY(22px) rotateX(10deg);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) rotateX(0deg);
-    }
+    box-shadow: 0 4px 14px rgba(62, 47, 39, 0.05);
 }
 
 .soul-letter-stamp {
     position: absolute;
-    top: 18px;
-    right: 20px;
-    width: 52px;
-    height: 60px;
-    border: 2px dashed #bba993;
-    padding: 4px;
+    top: 14px;
+    right: 18px;
+    width: 48px;
+    height: 56px;
+    border: 1px dashed var(--stamp-terracotta);
+    border-radius: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 0.65rem;
-    color: #8c7860;
-    background: #fbf9f4;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    color: var(--stamp-terracotta);
+    font-size: 0.68rem;
+    opacity: 0.85;
+    transform: rotate(3deg);
+    background: #FFFBF7;
 }
 
-/* ================= 火漆章按鈕 (Wax Seal Button) ================= */
+/* 火漆印章按鈕 (溫潤手工感) */
 .btn-wax-seal {
-    background: radial-gradient(circle at 35% 35%, #cb4338, #86231c);
-    color: #f7ede9;
-    border: 1px solid #6b1b15;
-    border-radius: 24px;
-    padding: 7px 18px;
+    background: var(--stamp-terracotta);
+    border: 1px solid var(--stamp-terracotta-dark);
+    color: #FFFFFF;
+    border-radius: 20px;
+    padding: 6px 18px;
     font-size: 0.88rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
-    box-shadow: 0 3px 8px rgba(134, 35, 28, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(224, 122, 95, 0.28);
     transition: all 0.22s ease;
     cursor: pointer;
     display: inline-flex;
@@ -311,19 +243,15 @@ body {
 }
 
 .btn-wax-seal:hover {
-    background: radial-gradient(circle at 35% 35%, #db4f43, #982921);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(134, 35, 28, 0.45);
+    background: var(--stamp-terracotta-dark);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.38);
 }
 
-.btn-wax-seal:active {
-    transform: scale(0.97);
-}
-
-/* ================= 墨水瓶計量器 (Inkwell Gauge) ================= */
+/* 墨水計量與打字指示器 */
 .inkwell-counter {
-    background: #f4eee1;
+    background: #F3ECE5;
     border: 1px solid var(--border-soft);
     border-radius: 20px;
     padding: 3px 12px;
@@ -332,13 +260,12 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: border-color 0.2s;
 }
 
 .ink-level-bar {
     width: 42px;
     height: 6px;
-    background: #ddd6c7;
+    background: #DFD5CA;
     border-radius: 3px;
     overflow: hidden;
     display: inline-block;
@@ -349,10 +276,9 @@ body {
     width: 0%;
     background: var(--ink-primary);
     border-radius: 3px;
-    transition: width 0.3s ease, background-color 0.3s;
+    transition: width 0.3s ease;
 }
 
-/* 墨水筆尖打字進度提示 */
 .ink-pen-indicator {
     font-size: 0.84rem;
     color: var(--text-muted);
@@ -367,7 +293,7 @@ body {
     border-radius: 50%;
     background-color: var(--sage-green);
     display: inline-block;
-    box-shadow: 0 0 0 3px rgba(90, 138, 110, 0.2);
+    box-shadow: 0 0 0 3px rgba(82, 167, 122, 0.2);
     transition: background-color 0.3s;
 }
 
@@ -378,23 +304,21 @@ body {
 
 @keyframes pulseGlow {
     from { transform: scale(1); opacity: 0.7; }
-    to { transform: scale(1.35); opacity: 1; }
+    to { transform: scale(1.3); opacity: 1; }
 }
 
-/* ================= 靈感便利貼骰子 (Spark Prompt Note) ================= */
+/* 靈感便利貼 */
 .spark-note {
-    background: #fff9db;
-    border: 1px dashed #e8d795;
+    background: #FFFDF5;
+    border: 1px dashed var(--ochre-gold);
     border-radius: 6px;
     padding: 8px 14px;
     font-size: 0.84rem;
-    color: #63501a;
+    color: var(--text-main);
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 2px 6px rgba(180, 160, 80, 0.1);
-    transform: rotate(-0.5deg);
-    animation: fadeIn 0.3s ease;
+    box-shadow: 0 2px 6px rgba(212, 165, 116, 0.12);
 }
 
 .btn-spark-dice {
@@ -409,21 +333,21 @@ body {
 }
 
 .btn-spark-dice:hover {
-    background: #f2e9d2;
-    transform: rotate(25deg);
+    background: #F3ECE5;
+    transform: rotate(20deg);
 }
 
-/* 手撕便籤回音盒 */
+/* 時間的回音盒 (Torn Paper Echo) */
 .echo-torn-paper {
-    background: #f6f0e4;
-    border-left: 3.5px solid var(--ochre-gold);
-    border-radius: 5px;
+    background: #FAF6EE;
+    border-left: 3.5px solid var(--misty-lake);
+    border-radius: 6px;
     padding: 16px;
     position: relative;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 6px rgba(62, 47, 39, 0.03);
 }
 
-/* 時間河流的章節時間軸線 */
+/* 時間河流的章節時間軸線 (River Stem) */
 .timeline-stem {
     position: relative;
     padding-left: 32px;
@@ -433,106 +357,80 @@ body {
     content: '';
     position: absolute;
     left: 10px;
-    top: 12px;
-    bottom: 12px;
+    top: 14px;
+    bottom: 14px;
     width: 2px;
-    background: #dfd7c7;
+    background: var(--misty-lake-light);
 }
 
 .timeline-node {
     position: absolute;
     left: 4px;
-    top: 8px;
+    top: 10px;
     width: 14px;
     height: 14px;
     border-radius: 50%;
     background: var(--paper-card);
-    border: 3px solid var(--ink-primary);
-    transition: transform 0.2s;
+    border: 3px solid var(--misty-lake);
+    box-shadow: 0 0 0 3px rgba(160, 189, 201, 0.22);
 }
 
-.handbook-card:hover .timeline-node {
-    transform: scale(1.25);
-    border-color: var(--ochre-gold);
-}
-
-/* ================= 沉浸專注模式 (Zen Focus Mode) ================= */
+/* 純淨專注模式 (Zen Focus Mode) */
 body.zen-focus-mode .journal-nav,
 body.zen-focus-mode footer,
-body.zen-focus-mode .col-lg-4,
-body.zen-focus-mode #toggleModeBtn {
-    opacity: 0.12 !important;
-    pointer-events: none;
-    filter: blur(1.5px);
-    transition: all 0.4s ease;
+body.zen-focus-mode #rightPageCol {
+    display: none !important;
 }
 
-body.zen-focus-mode .col-lg-8 {
+body.zen-focus-mode #leftPageCol {
     width: 100% !important;
     max-width: 860px;
     margin: 0 auto;
-    transition: all 0.4s ease;
 }
 
-.btn-zen-mode {
+body.zen-focus-mode .handbook-card {
+    box-shadow: 0 8px 36px rgba(62, 47, 39, 0.1);
+}
+
+/* 語言切換選單 (Handbook Theme) */
+.lang-switch-form {
+    margin: 0;
+    display: inline-block;
+}
+
+.lang-selector-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    padding: 3px 8px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.lang-selector-wrapper:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.lang-globe-icon {
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+.lang-select {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #e3ded6;
-    border-radius: 20px;
-    padding: 3px 12px;
+    border: none;
+    color: #FAF5F0;
     font-size: 0.82rem;
-    transition: all 0.2s;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+    padding-right: 2px;
 }
 
-.btn-zen-mode:hover, .btn-zen-mode.active {
-    background: #ffffff;
-    color: var(--ink-primary);
-    border-color: #ffffff;
-}
-
-/* ================= 復古精裝書皮封面 (Hardcover Book Styling) ================= */
-.hardcover-book {
-    background: #202938;
-    color: #f7f4ed;
-    border: 4px double #d4af37;
-    border-radius: 12px;
-    padding: 48px 36px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.15);
-    position: relative;
-    overflow: hidden;
-}
-
-.hardcover-book::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 20px;
-    width: 4px;
-    background: rgba(212, 175, 55, 0.35);
-    border-right: 1px solid rgba(0, 0, 0, 0.4);
-}
-
-.gold-embossed-title {
-    color: #f3e5ab;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 175, 55, 0.4);
-    letter-spacing: 0.15em;
-    font-family: 'Noto Serif TC', serif;
-}
-
-/* 手帳折角微效果 (Page Curl) */
-.page-curl {
-    position: relative;
-}
-
-.page-curl::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-width: 0 0 16px 16px;
-    border-style: solid;
-    border-color: transparent transparent #ded6c5 transparent;
-    box-shadow: -1px -1px 2px rgba(0,0,0,0.06);
-    pointer-events: none;
+.lang-select option {
+    background: var(--ink-primary);
+    color: #FAF5F0;
 }
